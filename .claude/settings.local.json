@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /c/Users/vidya/Documents/scopeguard && npm install 2>&1)",
+      "Bash(cd /c/Users/vidya/Documents/scopeguard && rm -rf node_modules package-lock.json && npm install 2>&1)",
+      "Bash(true:*)",
+      "Bash(sleep 2:*)",
+      "Bash(sleep 3 && curl -s -X POST http://localhost:4000/agent -H \"Content-Type: application/json\" -d '{\"query\": \"List my GitHub repositories\"}' 2>&1)",
+      "Bash(start:*)"
+    ]
+  }
+}
