@@ -2,9 +2,16 @@ const express = require('express');
 const router = express.Router();
 const Anthropic = require('@anthropic-ai/sdk');
 const fetch = require('node-fetch');
+const { ManagementClient } = require('auth0');
 const { logAction } = require('../db/database');
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const management = new ManagementClient({
+  domain: process.env.AUTH0_DOMAIN,
+  clientId: process.env.AUTH0_AGENT_CLIENT_ID,
+  clientSecret: process.env.AUTH0_AGENT_CLIENT_SECRET
+});
 
 const RISK_CLASSIFICATIONS = {
   low: {
@@ -56,32 +63,24 @@ Respond in JSON format only, no markdown:
   }
 }
 
-async function getGitHubToken() {
-  // Request token from Auth0 Token Vault via M2M flow
-  const tokenResponse = await fetch(`https://${process.env.AUTH0_DOMAIN}/oauth/token`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      client_id: process.env.AUTH0_AGENT_CLIENT_ID,
-      client_secret: process.env.AUTH0_AGENT_CLIENT_SECRET,
-      audience: process.env.AUTH0_AUDIENCE,
-      grant_type: 'client_credentials'
-    })
-  });
+async function getGitHubToken(userId) {
+  try {
+    // Retrieve user from Auth0 Management API — includes linked identities
+    const user = await management.users.get({ id: userId });
+    const identities = user.data?.identities || user.identities || [];
+    const githubIdentity = identities.find(i => i.provider === 'github');
 
-  if (!tokenResponse.ok) {
-    console.error('Auth0 Token Vault unavailable, falling back to GITHUB_TOKEN');
+    if (githubIdentity && githubIdentity.access_token) {
+      console.log('GitHub token retrieved from Auth0 Token Vault');
+      return githubIdentity.access_token;
+    }
+
+    console.log('No GitHub identity in Token Vault, falling back to GITHUB_TOKEN PAT');
+    return process.env.GITHUB_TOKEN || null;
+  } catch (err) {
+    console.error('Token Vault retrieval failed:', err.message);
     return process.env.GITHUB_TOKEN || null;
   }
-
-  const { access_token } = await tokenResponse.json();
-
-  // The M2M token from Auth0 is not a GitHub token — use PAT fallback for direct GitHub API calls
-  if (process.env.GITHUB_TOKEN) {
-    return process.env.GITHUB_TOKEN;
-  }
-
-  return access_token;
 }
 
 async function executeGitHubAction(classification, githubToken) {
@@ -116,7 +115,6 @@ async function executeGitHubAction(classification, githubToken) {
     }
 
     case 'list_issues': {
-      const repoPath = repo_name || 'user';
       const url = repo_name
         ? `https://api.github.com/repos/${repo_name}/issues?per_page=10`
         : 'https://api.github.com/issues?per_page=10';
@@ -170,6 +168,7 @@ async function executeGitHubAction(classification, githubToken) {
 
 router.post('/', async (req, res) => {
   const { query } = req.body;
+  const userId = req.oidc.user.sub;
 
   if (!query) {
     return res.status(400).json({ error: 'Query is required' });
@@ -187,7 +186,7 @@ router.post('/', async (req, res) => {
         scope_used: 'admin',
         risk_level: 'high',
         status: 'pending',
-        user_id: 'user',
+        user_id: userId,
         details: 'Step-up authorization required'
       });
 
@@ -200,8 +199,8 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // Step 3: Get GitHub token from Auth0
-    const githubToken = await getGitHubToken();
+    // Step 3: Get GitHub token from Auth0 Token Vault
+    const githubToken = await getGitHubToken(userId);
 
     if (!githubToken) {
       logAction({
@@ -210,7 +209,7 @@ router.post('/', async (req, res) => {
         scope_used: classification.risk === 'low' ? 'read' : 'issues:write',
         risk_level: classification.risk,
         status: 'error',
-        user_id: 'user',
+        user_id: userId,
         details: 'Failed to obtain GitHub token from Auth0 Token Vault'
       });
 
@@ -232,7 +231,7 @@ router.post('/', async (req, res) => {
       scope_used: scopeUsed,
       risk_level: classification.risk,
       status: 'success',
-      user_id: 'user',
+      user_id: userId,
       details: JSON.stringify(result.data).substring(0, 500)
     });
 
@@ -253,7 +252,7 @@ router.post('/', async (req, res) => {
       scope_used: 'unknown',
       risk_level: 'medium',
       status: 'error',
-      user_id: 'user',
+      user_id: userId,
       details: err.message
     });
 
@@ -264,6 +263,7 @@ router.post('/', async (req, res) => {
 // Step-up auth confirmation endpoint
 router.post('/confirm', async (req, res) => {
   const { action, approved } = req.body;
+  const userId = req.oidc.user.sub;
 
   if (!approved) {
     logAction({
@@ -272,7 +272,7 @@ router.post('/confirm', async (req, res) => {
       scope_used: 'admin',
       risk_level: 'high',
       status: 'denied',
-      user_id: 'user',
+      user_id: userId,
       details: 'User denied step-up authorization'
     });
 
@@ -288,7 +288,7 @@ router.post('/confirm', async (req, res) => {
     scope_used: 'admin',
     risk_level: 'high',
     status: 'blocked',
-    user_id: 'user',
+    user_id: userId,
     details: 'Step-up authorization granted but action blocked in demo mode for safety'
   });
 
