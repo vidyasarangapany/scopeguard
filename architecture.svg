@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 780" width="1100" height="780">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0e1a"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#172a45"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f3d2e"/>
+      <stop offset="100%" stop-color="#0a2a1f"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2d1b69"/>
+      <stop offset="100%" stop-color="#1f1349"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5c1a1a"/>
+      <stop offset="100%" stop-color="#3b1111"/>
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a3010"/>
+      <stop offset="100%" stop-color="#33210b"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    </marker>
+    <marker id="arrowYellow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b5cf6"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="780" fill="url(#bgGrad)" rx="12"/>
+  <rect x="0" y="0" width="1100" height="4" fill="url(#accentGrad)" rx="2"/>
+
+  <!-- Title -->
+  <text x="550" y="42" text-anchor="middle" fill="url(#accentGrad)" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="1">SCOPEGUARD SYSTEM ARCHITECTURE</text>
+  <text x="550" y="62" text-anchor="middle" fill="#64748b" font-family="Segoe UI, Arial, sans-serif" font-size="12" letter-spacing="0.5">Least-Privilege AI Agent Authorization Console</text>
+
+  <!-- ========== COMPONENT BOXES ========== -->
+
+  <!-- User / Browser -->
+  <rect x="435" y="85" width="230" height="58" rx="10" fill="url(#blueGrad)" stroke="#2a4a7f" stroke-width="1.5" filter="url(#shadow)"/>
+  <circle cx="470" cy="114" r="14" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+  <circle cx="470" cy="108" r="5" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+  <path d="M458 124 a12 8 0 0 1 24 0" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="495" y="109" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">User</text>
+  <text x="495" y="126" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">Web Browser</text>
+
+  <!-- ScopeGuard UI -->
+  <rect x="400" y="195" width="300" height="62" rx="10" fill="url(#blueGrad)" stroke="#2a4a7f" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="428" y="215" width="18" height="14" rx="2" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+  <line x1="428" y1="220" x2="446" y2="220" stroke="#3b82f6" stroke-width="1"/>
+  <text x="456" y="222" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">ScopeGuard UI</text>
+  <text x="456" y="239" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">Vanilla HTML / CSS / JS</text>
+
+  <!-- Express Backend -->
+  <rect x="365" y="330" width="370" height="70" rx="12" fill="url(#greenGrad)" stroke="#1a5c3a" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="365" y="330" width="370" height="70" rx="12" fill="none" stroke="url(#accentGrad)" stroke-width="1" opacity="0.3"/>
+  <text x="550" y="360" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">Express Backend</text>
+  <text x="550" y="380" text-anchor="middle" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12">Node.js · Port 4000 · REST API</text>
+
+  <!-- Claude Sonnet -->
+  <rect x="50" y="470" width="230" height="68" rx="10" fill="url(#purpleGrad)" stroke="#4c2f99" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="165" y="498" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">Claude Sonnet</text>
+  <text x="165" y="518" text-anchor="middle" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="11">Risk Classifier &amp; Action Planner</text>
+
+  <!-- Risk Policy Engine -->
+  <rect x="50" y="580" width="230" height="68" rx="10" fill="url(#orangeGrad)" stroke="#6b4a1a" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="165" y="608" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">Risk Policy Engine</text>
+  <text x="165" y="628" text-anchor="middle" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="11">LOW · MEDIUM · HIGH</text>
+
+  <!-- Auth0 Token Vault -->
+  <rect x="435" y="480" width="230" height="68" rx="10" fill="url(#blueGrad)" stroke="#2a4a7f" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="463" y="503" width="14" height="18" rx="3" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+  <path d="M467 503 v-4 a3 3 0 0 1 6 0 v4" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="486" y="510" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">Auth0 Token Vault</text>
+  <text x="486" y="528" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="11">Stores &amp; Refreshes Tokens</text>
+
+  <!-- GitHub API -->
+  <rect x="435" y="600" width="230" height="68" rx="10" fill="url(#blueGrad)" stroke="#2a4a7f" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="550" y="628" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">GitHub API</text>
+  <text x="550" y="648" text-anchor="middle" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="11">Repos · Issues · Delete</text>
+
+  <!-- SQLite Audit Log -->
+  <rect x="820" y="470" width="230" height="68" rx="10" fill="url(#redGrad)" stroke="#7f2d2d" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="935" y="498" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">SQLite Audit Log</text>
+  <text x="935" y="518" text-anchor="middle" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Immutable Action Records</text>
+
+  <!-- ========== ARROWS ========== -->
+
+  <!-- User -> UI -->
+  <line x1="550" y1="143" x2="550" y2="193" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <rect x="490" y="158" width="120" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
+  <text x="550" y="172" text-anchor="middle" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="10">HTTP Requests</text>
+
+  <!-- UI -> Backend -->
+  <line x1="550" y1="257" x2="550" y2="328" stroke="#10b981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <rect x="500" y="280" width="100" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
+  <text x="550" y="294" text-anchor="middle" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="10">REST API calls</text>
+
+  <!-- Backend -> Claude -->
+  <line x1="385" y1="400" x2="240" y2="468" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arrowPurple)"/>
+  <rect x="255" y="418" width="120" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
+  <text x="315" y="432" text-anchor="middle" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="10">Classify risk level</text>
+
+  <!-- Claude -> Risk Policy -->
+  <line x1="165" y1="538" x2="165" y2="578" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowYellow)"/>
+  <rect x="113" y="548" width="105" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
+  <text x="165" y="562" text-anchor="middle" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="10">Enforce policy</text>
+
+  <!-- Backend -> Auth0 Token Vault -->
+  <line x1="550" y1="400" x2="550" y2="478" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <rect x="480" y="430" width="140" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
+  <text x="550" y="444" text-anchor="middle" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="10">Request OAuth token</text>
+
+  <!-- Auth0 -> GitHub -->
+  <line x1="550" y1="548" x2="550" y2="598" stroke="#10b981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <rect x="480" y="563" width="140" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
+  <text x="550" y="577" text-anchor="middle" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="10">Scoped access token</text>
+
+  <!-- Backend -> SQLite -->
+  <line x1="715" y1="400" x2="858" y2="468" stroke="#ef4444" stroke-width="2" marker-end="url(#arrowRed)"/>
+  <rect x="740" y="418" width="110" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
+  <text x="795" y="432" text-anchor="middle" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="10">Log all actions</text>
+
+  <!-- Risk Policy -> Backend (dashed return) -->
+  <line x1="280" y1="600" x2="375" y2="395" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrowYellow)" opacity="0.6"/>
+  <rect x="280" y="485" width="115" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
+  <text x="338" y="499" text-anchor="middle" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="10">Step-up / block</text>
+
+  <!-- ========== LEGEND ========== -->
+  <rect x="820" y="580" width="230" height="80" rx="8" fill="#0f1629" stroke="#1e2d4a" stroke-width="1"/>
+  <text x="935" y="600" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="10" font-weight="600" letter-spacing="0.5">RISK LEVELS</text>
+  <circle cx="855" cy="618" r="5" fill="#10b981"/>
+  <text x="868" y="622" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="11">LOW — Read only</text>
+  <circle cx="855" cy="636" r="5" fill="#f59e0b"/>
+  <text x="868" y="640" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="11">MEDIUM — Limited write</text>
+  <circle cx="855" cy="654" r="5" fill="#ef4444"/>
+  <text x="868" y="658" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11">HIGH — Step-up required</text>
+
+  <!-- ========== FOOTER ========== -->
+  <rect x="0" y="700" width="1100" height="80" fill="#080c16"/>
+  <line x1="100" y1="700" x2="1000" y2="700" stroke="url(#accentGrad)" stroke-width="1" opacity="0.4"/>
+  <text x="550" y="735" text-anchor="middle" fill="url(#accentGrad)" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="1.5">ScopeGuard</text>
+  <text x="550" y="758" text-anchor="middle" fill="#64748b" font-family="Segoe UI, Arial, sans-serif" font-size="13">Auth0 "Authorized to Act" Hackathon 2026</text>
+</svg>
