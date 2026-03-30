@@ -71,15 +71,43 @@ async function getGitHubToken(userId) {
     const githubIdentity = identities.find(i => i.provider === 'github');
 
     if (githubIdentity && githubIdentity.access_token) {
-      console.log('GitHub token retrieved from Auth0 Token Vault');
+      logAction({
+        action: 'Token exchange',
+        api: 'Auth0 Token Vault',
+        scope_used: 'read:user_idp_tokens',
+        risk_level: 'low',
+        status: 'success',
+        user_id: userId,
+        details: 'GitHub OAuth token retrieved from Auth0 Token Vault identity'
+      });
       return githubIdentity.access_token;
     }
 
-    console.log('No GitHub identity in Token Vault, falling back to GITHUB_TOKEN PAT');
-    return process.env.GITHUB_TOKEN || null;
+    const fallbackToken = process.env.GITHUB_TOKEN || null;
+    logAction({
+      action: 'Token exchange',
+      api: 'Auth0 Token Vault',
+      scope_used: 'read:user_idp_tokens',
+      risk_level: 'low',
+      status: fallbackToken ? 'success' : 'error',
+      user_id: userId,
+      details: fallbackToken
+        ? 'No GitHub identity in Token Vault — fell back to GITHUB_TOKEN PAT'
+        : 'No GitHub identity in Token Vault and no PAT fallback available'
+    });
+    return fallbackToken;
   } catch (err) {
-    console.error('Token Vault retrieval failed:', err.message);
-    return process.env.GITHUB_TOKEN || null;
+    const fallbackToken = process.env.GITHUB_TOKEN || null;
+    logAction({
+      action: 'Token exchange',
+      api: 'Auth0 Token Vault',
+      scope_used: 'read:user_idp_tokens',
+      risk_level: 'low',
+      status: fallbackToken ? 'success' : 'error',
+      user_id: userId,
+      details: `Token Vault retrieval failed: ${err.message}` + (fallbackToken ? ' — fell back to GITHUB_TOKEN PAT' : '')
+    });
+    return fallbackToken;
   }
 }
 

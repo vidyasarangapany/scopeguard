@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { ManagementClient } = require('auth0');
+const { logAction } = require('../db/database');
 
 const management = new ManagementClient({
   domain: process.env.AUTH0_DOMAIN,
@@ -59,7 +60,19 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/revoke/:accountId', (req, res) => {
+  const userId = req.oidc.user.sub;
   scopeOverride = 'revoked';
+
+  logAction({
+    action: 'Revoke GitHub access',
+    api: 'Auth0 Token Vault',
+    scope_used: 'repo:read,repo:write,issues:write,user:read',
+    risk_level: 'medium',
+    status: 'success',
+    user_id: userId,
+    details: `GitHub access revoked for account ${req.params.accountId} (demo mode)`
+  });
+
   res.json({
     message: 'Access revoked for GitHub (demo mode — Auth0 connection remains intact)',
     account: { id: req.params.accountId, status: 'revoked', scopes: [] }
@@ -67,7 +80,19 @@ router.post('/revoke/:accountId', (req, res) => {
 });
 
 router.post('/restore/:accountId', (req, res) => {
+  const userId = req.oidc.user.sub;
   scopeOverride = null;
+
+  logAction({
+    action: 'Restore GitHub access',
+    api: 'Auth0 Token Vault',
+    scope_used: 'repo:read,repo:write,issues:write,user:read',
+    risk_level: 'medium',
+    status: 'success',
+    user_id: userId,
+    details: `GitHub access restored for account ${req.params.accountId}`
+  });
+
   res.json({
     message: 'Access restored for GitHub',
     account: {

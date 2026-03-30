@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { auth, requiresAuth } = require('express-openid-connect');
-const { initDb } = require('./db/database');
+const { initDb, logAction } = require('./db/database');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -25,6 +25,36 @@ app.use(auth({
     login: '/login',
     logout: '/logout',
     callback: '/callback'
+  },
+  afterCallback: async (req, res, session, decodedState) => {
+    const userId = session.claims?.sub || 'unknown';
+    const returnTo = decodedState?.returnTo || '/';
+
+    if (returnTo.includes('github_connected=1')) {
+      // Returning from Connect GitHub flow
+      logAction({
+        action: 'GitHub account connected',
+        api: 'Auth0',
+        scope_used: 'repo,read:user,user:email',
+        risk_level: 'low',
+        status: 'success',
+        user_id: userId,
+        details: 'GitHub social connection linked via Auth0 Token Vault'
+      });
+    } else {
+      // Regular login
+      logAction({
+        action: 'User login',
+        api: 'Auth0',
+        scope_used: 'openid profile email',
+        risk_level: 'low',
+        status: 'success',
+        user_id: userId,
+        details: `Login via Auth0 Universal Login`
+      });
+    }
+
+    return session;
   }
 }));
 
@@ -44,13 +74,39 @@ app.get('/api/me', (req, res) => {
 
 // Connect GitHub — triggers Auth0 login with GitHub social connection
 app.get('/connect-github', requiresAuth(), (req, res) => {
+  logAction({
+    action: 'GitHub connection initiated',
+    api: 'Auth0',
+    scope_used: 'repo,read:user,user:email',
+    risk_level: 'low',
+    status: 'pending',
+    user_id: req.oidc.user.sub,
+    details: 'User initiated GitHub OAuth connection via Auth0'
+  });
+
   res.oidc.login({
     authorizationParams: {
       connection: 'github',
       connection_scope: 'repo,read:user,user:email'
     },
-    returnTo: '/'
+    returnTo: '/?github_connected=1'
   });
+});
+
+// Logout with audit logging
+app.get('/api/logout', (req, res) => {
+  if (req.oidc.isAuthenticated()) {
+    logAction({
+      action: 'User logout',
+      api: 'Auth0',
+      scope_used: 'session',
+      risk_level: 'low',
+      status: 'success',
+      user_id: req.oidc.user.sub,
+      details: 'User logged out'
+    });
+  }
+  res.redirect('/logout');
 });
 
 // Protected API routes
