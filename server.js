@@ -27,31 +27,34 @@ app.use(auth({
     callback: '/callback'
   },
   afterCallback: async (req, res, session, decodedState) => {
-    const userId = session.claims?.sub || 'unknown';
+    let userId = 'unknown';
+    try { userId = session.claims?.sub || 'unknown'; } catch {}
     const returnTo = decodedState?.returnTo || '/';
 
-    if (returnTo.includes('github_connected=1')) {
-      // Returning from Connect GitHub flow
-      logAction({
-        action: 'GitHub account connected',
-        api: 'Auth0',
-        scope_used: 'repo,read:user,user:email',
-        risk_level: 'low',
-        status: 'success',
-        user_id: userId,
-        details: 'GitHub social connection linked via Auth0 Token Vault'
-      });
-    } else {
-      // Regular login
-      logAction({
-        action: 'User login',
-        api: 'Auth0',
-        scope_used: 'openid profile email',
-        risk_level: 'low',
-        status: 'success',
-        user_id: userId,
-        details: `Login via Auth0 Universal Login`
-      });
+    try {
+      if (returnTo.includes('github_connected=1')) {
+        logAction({
+          action: 'GitHub account connected',
+          api: 'Auth0',
+          scope_used: 'repo,read:user,user:email',
+          risk_level: 'low',
+          status: 'success',
+          user_id: userId,
+          details: 'GitHub social connection linked via Auth0 Token Vault'
+        });
+      } else {
+        logAction({
+          action: 'User login',
+          api: 'Auth0',
+          scope_used: 'openid profile email',
+          risk_level: 'low',
+          status: 'success',
+          user_id: userId,
+          details: 'Login via Auth0 Universal Login'
+        });
+      }
+    } catch (logErr) {
+      console.error('Audit log error in afterCallback:', logErr.message);
     }
 
     return session;

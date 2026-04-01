@@ -9,8 +9,8 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const management = new ManagementClient({
   domain: process.env.AUTH0_DOMAIN,
-  clientId: process.env.AUTH0_AGENT_CLIENT_ID,
-  clientSecret: process.env.AUTH0_AGENT_CLIENT_SECRET
+  clientId: process.env.AUTH0_MANAGEMENT_CLIENT_ID || process.env.AUTH0_AGENT_CLIENT_ID,
+  clientSecret: process.env.AUTH0_MANAGEMENT_CLIENT_SECRET || process.env.AUTH0_AGENT_CLIENT_SECRET
 });
 
 const RISK_CLASSIFICATIONS = {

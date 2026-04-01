@@ -6,7 +6,11 @@
       "Bash(true:*)",
       "Bash(sleep 2:*)",
       "Bash(sleep 3 && curl -s -X POST http://localhost:4000/agent -H \"Content-Type: application/json\" -d '{\"query\": \"List my GitHub repositories\"}' 2>&1)",
-      "Bash(start:*)"
+      "Bash(start:*)",
+      "Bash(head:*)",
+      "Bash(cd:*)",
+      "Bash(cd /c/Users/vidya/Documents/scopeguard && git push -u origin auth-login-flow 2>&1)",
+      "Bash(cd /c/Users/vidya/Documents/scopeguard && gh pr create --title \"Add Auth0 login flow and Token Vault integration\" --body \"$\\(cat <<'EOF'\n## Summary\n- Add Auth0 login gate with `express-openid-connect` middleware — unauthenticated users see a sign-in screen\n- Add `/connect-github` route that triggers Auth0 GitHub social connection with `repo,read:user,user:email` scopes\n- Rewrite agent token retrieval to fetch GitHub OAuth tokens from Auth0 Token Vault \\(Management API\\) with PAT fallback\n- Permission Dashboard now shows real GitHub connection status from Token Vault and a \"Connect GitHub\" card when unlinked\n- Audit logs use real Auth0 `user.sub` instead of hardcoded `'user'`\n\n## Test plan\n- [ ] Visit `http://localhost:4000` — login gate appears\n- [ ] Click \"Sign in with Auth0\" — Auth0 Universal Login flow\n- [ ] After login — app loads, user name + avatar in header\n- [ ] Permission Dashboard shows \"Connect GitHub\" if GitHub not linked\n- [ ] Click Connect GitHub — GitHub OAuth flow — redirected back\n- [ ] Agent Console: \"List my repos\" — token from Token Vault — repos returned\n- [ ] Audit log shows real Auth0 user ID\n- [ ] Logout — back to login gate\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\nEOF\n\\)\" --base master 2>&1)"
     ]
   }
 }

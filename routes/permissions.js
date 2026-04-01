@@ -5,8 +5,8 @@ const { logAction } = require('../db/database');
 
 const management = new ManagementClient({
   domain: process.env.AUTH0_DOMAIN,
-  clientId: process.env.AUTH0_AGENT_CLIENT_ID,
-  clientSecret: process.env.AUTH0_AGENT_CLIENT_SECRET
+  clientId: process.env.AUTH0_MANAGEMENT_CLIENT_ID || process.env.AUTH0_AGENT_CLIENT_ID,
+  clientSecret: process.env.AUTH0_MANAGEMENT_CLIENT_SECRET || process.env.AUTH0_AGENT_CLIENT_SECRET
 });
 
 // Demo-mode scope state (revoke/restore toggles this locally)
