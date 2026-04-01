@@ -3,15 +3,16 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { auth, requiresAuth } = require('express-openid-connect');
+const { ManagementClient } = require('auth0');
 const { initDb, logAction } = require('./db/database');
-
+ 
 const app = express();
 const PORT = process.env.PORT || 4000;
-
+ 
 // Middleware
 app.use(cors());
 app.use(express.json());
-
+ 
 // Auth0 OpenID Connect middleware
 app.use(auth({
   authRequired: false,
@@ -30,13 +31,13 @@ app.use(auth({
     let userId = 'unknown';
     try { userId = session.claims?.sub || 'unknown'; } catch {}
     const returnTo = decodedState?.returnTo || '/';
-
+ 
     try {
       if (returnTo.includes('github_connected=1')) {
         logAction({
           action: 'GitHub account connected',
           api: 'Auth0',
-          scope_used: 'repo,read:user,user:email',
+          scope_used: 'public_repo,read:user,user:email',
           risk_level: 'low',
           status: 'success',
           user_id: userId,
@@ -56,13 +57,13 @@ app.use(auth({
     } catch (logErr) {
       console.error('Audit log error in afterCallback:', logErr.message);
     }
-
+ 
     return session;
   }
 }));
-
+ 
 app.use(express.static(path.join(__dirname, 'public')));
-
+ 
 // Auth state endpoint — returns user info if logged in
 app.get('/api/me', (req, res) => {
   if (req.oidc.isAuthenticated()) {
@@ -74,28 +75,70 @@ app.get('/api/me', (req, res) => {
     res.json({ authenticated: false });
   }
 });
-
+ 
+// Disconnect GitHub — unlinks identity then redirects to reconnect with correct scope
+app.get('/disconnect-github', requiresAuth(), async (req, res) => {
+  const userId = req.oidc.user.sub;
+ 
+  try {
+    const management = new ManagementClient({
+      domain: process.env.AUTH0_DOMAIN,
+      clientId: process.env.AUTH0_MANAGEMENT_CLIENT_ID,
+      clientSecret: process.env.AUTH0_MANAGEMENT_CLIENT_SECRET
+    });
+ 
+    const user = await management.users.get({ id: userId });
+    const identities = user.data?.identities || user.identities || [];
+    const githubIdentity = identities.find(i => i.provider === 'github');
+ 
+    if (githubIdentity) {
+      await management.users.unlink({
+        id: userId,
+        provider: 'github',
+        user_id: githubIdentity.user_id
+      });
+ 
+      logAction({
+        action: 'GitHub identity unlinked',
+        api: 'Auth0 Management API',
+        scope_used: 'update:users',
+        risk_level: 'medium',
+        status: 'success',
+        user_id: userId,
+        details: 'GitHub identity unlinked to force fresh token with public_repo scope only'
+      });
+    }
+ 
+    // Immediately redirect to reconnect with correct scope
+    res.redirect('/connect-github');
+ 
+  } catch (err) {
+    console.error('Failed to unlink GitHub:', err.message);
+    res.redirect('/?error=unlink_failed');
+  }
+});
+ 
 // Connect GitHub — triggers Auth0 login with GitHub social connection
 app.get('/connect-github', requiresAuth(), (req, res) => {
   logAction({
     action: 'GitHub connection initiated',
     api: 'Auth0',
-    scope_used: 'repo,read:user,user:email',
+    scope_used: 'public_repo,read:user,user:email',
     risk_level: 'low',
     status: 'pending',
     user_id: req.oidc.user.sub,
     details: 'User initiated GitHub OAuth connection via Auth0'
   });
-
+ 
   res.oidc.login({
     authorizationParams: {
       connection: 'github',
-      connection_scope: 'repo,read:user,user:email'
+      connection_scope: 'public_repo,read:user,user:email'
     },
     returnTo: '/?github_connected=1'
   });
 });
-
+ 
 // Logout with audit logging
 app.get('/api/logout', (req, res) => {
   if (req.oidc.isAuthenticated()) {
@@ -111,13 +154,13 @@ app.get('/api/logout', (req, res) => {
   }
   res.redirect('/logout');
 });
-
+ 
 // Protected API routes
 app.use('/agent', requiresAuth(), require('./routes/agent'));
 app.use('/permissions', requiresAuth(), require('./routes/permissions'));
 app.use('/audit-log', requiresAuth(), require('./routes/audit'));
 app.use('/delegation', requiresAuth(), require('./routes/delegation'));
-
+ 
 // Health check
 app.get('/health', (req, res) => {
   res.json({
@@ -128,12 +171,12 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-
+ 
 // Serve frontend
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
+ 
 // Initialize DB then start server
 initDb()
   .then(() => {

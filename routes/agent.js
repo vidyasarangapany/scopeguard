@@ -122,7 +122,8 @@ async function executeGitHubAction(classification, githubToken) {
 
   switch (github_action) {
     case 'list_repos': {
-      const res = await fetch('https://api.github.com/user/repos?sort=updated&per_page=10', { headers });
+      // FIXED: visibility=public enforces least-privilege — no private repos returned
+      const res = await fetch('https://api.github.com/user/repos?sort=updated&per_page=10&visibility=public&affiliation=owner', { headers });
       if (!res.ok) {
         const errText = await res.text();
         throw new Error(`GitHub API error ${res.status}: ${errText}`);
