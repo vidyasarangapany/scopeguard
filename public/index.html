@@ -6,729 +6,156 @@
   <title>ScopeGuard - AI Agent Authorization Console</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg-primary: #0a0e1a;
-      --bg-secondary: #111827;
-      --bg-card: #1a2235;
-      --bg-input: #0f1629;
-      --border: #1e2d4a;
-      --border-light: #2a3f5f;
-      --text-primary: #e2e8f0;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --accent-blue: #3b82f6;
-      --accent-blue-dim: #1e40af;
-      --accent-green: #10b981;
-      --accent-green-dim: #065f46;
-      --accent-yellow: #f59e0b;
-      --accent-yellow-dim: #78350f;
-      --accent-red: #ef4444;
-      --accent-red-dim: #7f1d1d;
-      --accent-purple: #8b5cf6;
-      --radius: 10px;
-      --shadow: 0 4px 24px rgba(0,0,0,0.3);
+      --bg-primary: #0a0e1a; --bg-secondary: #111827; --bg-card: #1a2235;
+      --bg-input: #0f1629; --border: #1e2d4a; --border-light: #2a3f5f;
+      --text-primary: #e2e8f0; --text-secondary: #94a3b8; --text-muted: #64748b;
+      --accent-blue: #3b82f6; --accent-blue-dim: #1e40af;
+      --accent-green: #10b981; --accent-green-dim: #065f46;
+      --accent-yellow: #f59e0b; --accent-yellow-dim: #78350f;
+      --accent-red: #ef4444; --accent-red-dim: #7f1d1d;
+      --accent-purple: #8b5cf6; --radius: 10px; --shadow: 0 4px 24px rgba(0,0,0,0.3);
     }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      min-height: 100vh;
-    }
-
-    .login-gate {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: var(--bg-primary);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    }
-
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+    .login-gate { display: none; position: fixed; inset: 0; background: var(--bg-primary); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; }
     .login-gate.active { display: flex; }
-
-    .login-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 48px 40px;
-      max-width: 420px;
-      width: 90%;
-      text-align: center;
-      box-shadow: var(--shadow);
-    }
-
-    .login-card .logo-icon {
-      width: 64px;
-      height: 64px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      margin: 0 auto 20px;
-    }
-
-    .login-card h1 {
-      font-size: 28px;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
-    }
-
-    .login-card p {
-      color: var(--text-secondary);
-      font-size: 14px;
-      line-height: 1.6;
-      margin-bottom: 28px;
-    }
-
-    .btn-login {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 32px;
-      background: var(--accent-blue);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.2s;
-      text-decoration: none;
-    }
-
+    .login-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 48px 40px; max-width: 420px; width: 90%; text-align: center; box-shadow: var(--shadow); }
+    .login-card .logo-icon { width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-green)); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; }
+    .login-card h1 { font-size: 28px; font-weight: 700; background: linear-gradient(135deg, var(--accent-blue), var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+    .login-card p { color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 28px; }
+    .btn-login { display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; background: var(--accent-blue); color: white; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; text-decoration: none; }
     .btn-login:hover { background: #2563eb; }
     .btn-login svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
-
-    .header {
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
-
-    .logo h1 {
-      font-size: 20px;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .logo span {
-      font-size: 12px;
-      color: var(--text-muted);
-      display: block;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .header-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    .user-info img {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-    }
-
-    .btn-logout {
-      padding: 6px 14px;
-      background: transparent;
-      border: 1px solid var(--border-light);
-      border-radius: 20px;
-      color: var(--text-muted);
-      font-size: 12px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s;
-      text-decoration: none;
-    }
-
-    .btn-logout:hover {
-      border-color: var(--accent-red);
-      color: var(--accent-red);
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--accent-green);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .tabs {
-      display: flex;
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border);
-      overflow-x: auto;
-    }
-
-    .tab {
-      padding: 14px 24px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-muted);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s;
-      white-space: nowrap;
-      background: none;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-      font-family: inherit;
-    }
-
+    .header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-green)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .logo h1 { font-size: 20px; font-weight: 700; background: linear-gradient(135deg, var(--accent-blue), var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .logo span { font-size: 12px; color: var(--text-muted); display: block; }
+    .header-right { display: flex; align-items: center; gap: 14px; }
+    .header-badge { display: flex; align-items: center; gap: 8px; padding: 6px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--text-secondary); }
+    .user-info { display: flex; align-items: center; gap: 8px; padding: 6px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--text-secondary); }
+    .user-info img { width: 22px; height: 22px; border-radius: 50%; }
+    .btn-logout { padding: 6px 14px; background: transparent; border: 1px solid var(--border-light); border-radius: 20px; color: var(--text-muted); font-size: 12px; cursor: pointer; font-family: inherit; transition: all 0.2s; text-decoration: none; }
+    .btn-logout:hover { border-color: var(--accent-red); color: var(--accent-red); }
+    .status-dot { width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .tabs { display: flex; background: var(--bg-secondary); border-bottom: 1px solid var(--border); overflow-x: auto; }
+    .tab { padding: 14px 24px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; }
     .tab:hover { color: var(--text-secondary); }
-    .tab.active {
-      color: var(--accent-blue);
-      border-bottom-color: var(--accent-blue);
-    }
-
+    .tab.active { color: var(--accent-blue); border-bottom-color: var(--accent-blue); }
     .content { padding: 24px; max-width: 1200px; margin: 0 auto; }
     .panel { display: none; }
     .panel.active { display: block; }
-
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .card-title {
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .card-title { font-size: 16px; font-weight: 600; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
     .badge-green { background: var(--accent-green-dim); color: var(--accent-green); }
     .badge-yellow { background: var(--accent-yellow-dim); color: var(--accent-yellow); }
     .badge-red { background: var(--accent-red-dim); color: var(--accent-red); }
     .badge-blue { background: var(--accent-blue-dim); color: var(--accent-blue); }
     .badge-purple { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
-
-    .btn {
-      padding: 8px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-
-    .btn-primary {
-      background: var(--accent-blue);
-      color: white;
-    }
+    .badge-orange { background: rgba(249,115,22,0.15); color: #f97316; }
+    .btn { padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .btn-primary { background: var(--accent-blue); color: white; }
     .btn-primary:hover { background: #2563eb; }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .btn-danger {
-      background: var(--accent-red-dim);
-      color: var(--accent-red);
-      border: 1px solid var(--accent-red);
-    }
+    .btn-danger { background: var(--accent-red-dim); color: var(--accent-red); border: 1px solid var(--accent-red); }
     .btn-danger:hover { background: rgba(239,68,68,0.25); }
-
-    .btn-success {
-      background: var(--accent-green-dim);
-      color: var(--accent-green);
-      border: 1px solid var(--accent-green);
-    }
+    .btn-success { background: var(--accent-green-dim); color: var(--accent-green); border: 1px solid var(--accent-green); }
     .btn-success:hover { background: rgba(16,185,129,0.25); }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid var(--border-light);
-    }
+    .btn-outline { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-light); }
     .btn-outline:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
-
-    /* NEW: Reconnect button style */
-    .btn-warning {
-      background: var(--accent-yellow-dim);
-      color: var(--accent-yellow);
-      border: 1px solid var(--accent-yellow);
-    }
+    .btn-warning { background: var(--accent-yellow-dim); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
     .btn-warning:hover { background: rgba(245,158,11,0.25); }
-
-    .connect-github-card {
-      display: none;
-      background: var(--bg-card);
-      border: 1px solid var(--accent-blue);
-      border-radius: var(--radius);
-      padding: 28px;
-      margin-bottom: 16px;
-      text-align: center;
-      box-shadow: var(--shadow);
-    }
-
+    .btn-sub { background: rgba(139,92,246,0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+    .btn-sub:hover { background: rgba(139,92,246,0.25); }
+    .btn-sub:disabled { opacity: 0.5; cursor: not-allowed; }
+    .connect-github-card { display: none; background: var(--bg-card); border: 1px solid var(--accent-blue); border-radius: var(--radius); padding: 28px; margin-bottom: 16px; text-align: center; box-shadow: var(--shadow); }
     .connect-github-card.visible { display: block; }
-
-    .connect-github-card h3 {
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-
-    .connect-github-card p {
-      color: var(--text-secondary);
-      font-size: 13px;
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
-
-    .connect-github-card .btn-group {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .btn-connect-github {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 28px;
-      background: #24292e;
-      color: white;
-      border: 1px solid #444;
-      border-radius: var(--radius);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.2s;
-      text-decoration: none;
-    }
-
+    .connect-github-card h3 { font-size: 18px; margin-bottom: 8px; }
+    .connect-github-card p { color: var(--text-secondary); font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+    .connect-github-card .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-connect-github { display: inline-flex; align-items: center; gap: 10px; padding: 12px 28px; background: #24292e; color: white; border: 1px solid #444; border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s; text-decoration: none; }
     .btn-connect-github:hover { background: #2f363d; }
     .btn-connect-github svg { width: 20px; height: 20px; fill: white; }
-
-    .account-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      margin-bottom: 10px;
-    }
-
-    .account-info {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .account-icon {
-      width: 42px;
-      height: 42px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
+    .account-row { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; }
+    .account-info { display: flex; align-items: center; gap: 14px; }
+    .account-icon { width: 42px; height: 42px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
     .account-icon svg { width: 22px; height: 22px; fill: var(--text-primary); }
-
     .account-name { font-weight: 600; font-size: 14px; }
     .account-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
     .scope-list { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .scope-badge { padding: 4px 10px; background: var(--accent-blue-dim); color: var(--accent-blue); border-radius: 6px; font-size: 11px; font-weight: 500; }
+    .account-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+    .token-vault-banner { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: var(--radius); margin-bottom: 16px; font-size: 13px; color: var(--accent-green); }
 
-    .scope-badge {
-      padding: 4px 10px;
-      background: var(--accent-blue-dim);
-      color: var(--accent-blue);
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 500;
-    }
-
-    /* NEW: account action buttons group */
-    .account-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-end;
-    }
-
-    .token-vault-banner {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 16px;
-      background: rgba(16,185,129,0.08);
-      border: 1px solid rgba(16,185,129,0.2);
-      border-radius: var(--radius);
-      margin-bottom: 16px;
-      font-size: 13px;
-      color: var(--accent-green);
-    }
-
-    .agent-input-group {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .agent-input-group input {
-      flex: 1;
-      padding: 12px 16px;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text-primary);
-      font-size: 14px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
+    /* Agent Console — two button layout */
+    .agent-input-group { display: flex; gap: 10px; margin-bottom: 12px; }
+    .agent-input-group input { flex: 1; padding: 12px 16px; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-primary); font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s; }
     .agent-input-group input:focus { border-color: var(--accent-blue); }
     .agent-input-group input::placeholder { color: var(--text-muted); }
+    .agent-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+    .agent-legend { display: flex; gap: 16px; margin-bottom: 16px; font-size: 12px; color: var(--text-muted); }
+    .agent-legend span { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-    .response-area {
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      min-height: 200px;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .response-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .thinking {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--text-muted);
-      font-size: 13px;
-    }
-
-    .thinking .dots span {
-      animation: blink 1.4s infinite both;
-      font-size: 20px;
-    }
+    /* Dual response area */
+    .response-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 768px) { .response-grid { grid-template-columns: 1fr; } }
+    .response-panel { background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; min-height: 180px; font-size: 13px; line-height: 1.6; }
+    .response-panel.primary-panel { border-color: var(--accent-blue); }
+    .response-panel.sub-panel { border-color: var(--accent-purple); }
+    .response-panel-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .response-panel-header .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .primary-dot { background: var(--accent-blue); }
+    .sub-dot { background: var(--accent-purple); }
+    .response-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .thinking { display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 13px; }
+    .thinking .dots span { animation: blink 1.4s infinite both; font-size: 20px; }
     .thinking .dots span:nth-child(2) { animation-delay: 0.2s; }
     .thinking .dots span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes blink {
-      0%, 100% { opacity: 0.2; }
-      20% { opacity: 1; }
-    }
-
-    .result-item {
-      padding: 10px 14px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 13px;
-    }
-
-    .result-item a {
-      color: var(--accent-blue);
-      text-decoration: none;
-    }
+    @keyframes blink { 0%, 100% { opacity: 0.2; } 20% { opacity: 1; } }
+    .result-item { padding: 10px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
+    .result-item a { color: var(--accent-blue); text-decoration: none; }
     .result-item a:hover { text-decoration: underline; }
+    .blocked-banner { padding: 12px 16px; background: rgba(239,68,68,0.1); border: 1px solid var(--accent-red); border-radius: 8px; color: var(--accent-red); font-size: 13px; line-height: 1.5; }
 
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
     .modal-overlay.active { display: flex; }
-
-    .modal {
-      background: var(--bg-card);
-      border: 1px solid var(--accent-red);
-      border-radius: var(--radius);
-      padding: 28px;
-      max-width: 440px;
-      width: 90%;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
-
-    .modal h3 {
-      color: var(--accent-red);
-      font-size: 18px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .modal p {
-      color: var(--text-secondary);
-      font-size: 14px;
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    .modal-action {
-      padding: 10px 14px;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 13px;
-      color: var(--text-primary);
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-    }
-
-    .audit-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
+    .modal { background: var(--bg-card); border: 1px solid var(--accent-red); border-radius: var(--radius); padding: 28px; max-width: 440px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+    .modal h3 { color: var(--accent-red); font-size: 18px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .modal p { color: var(--text-secondary); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+    .modal-action { padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: var(--text-primary); }
+    .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+    .audit-table { width: 100%; border-collapse: collapse; font-size: 13px; }
     .audit-table thead { background: var(--bg-input); }
-
-    .audit-table th {
-      padding: 10px 14px;
-      text-align: left;
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .audit-table td {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-
+    .audit-table th { padding: 10px 14px; text-align: left; color: var(--text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+    .audit-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
     .audit-table tr:hover td { background: rgba(59,130,246,0.04); }
-
-    .audit-empty {
-      text-align: center;
-      padding: 40px;
-      color: var(--text-muted);
-    }
-
-    .delegation-grid {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 20px;
-      align-items: start;
-    }
-
-    @media (max-width: 768px) {
-      .delegation-grid {
-        grid-template-columns: 1fr;
-      }
-      .delegation-arrow { transform: rotate(90deg); }
-    }
-
-    .agent-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .agent-card h3 {
-      font-size: 16px;
-      margin-bottom: 4px;
-    }
-
-    .agent-card .agent-type {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-    }
-
-    .agent-scope-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 12px;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 13px;
-    }
-
+    .audit-empty { text-align: center; padding: 40px; color: var(--text-muted); }
+    .delegation-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: start; }
+    @media (max-width: 768px) { .delegation-grid { grid-template-columns: 1fr; } }
+    .agent-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+    .agent-card h3 { font-size: 16px; margin-bottom: 4px; }
+    .agent-card .agent-type { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+    .agent-scope-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
     .scope-status-granted { color: var(--accent-green); }
     .scope-status-inherited { color: var(--accent-blue); }
     .scope-status-blocked { color: var(--accent-red); }
-
-    .delegation-arrow {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      padding-top: 60px;
-      color: var(--text-muted);
-      font-size: 12px;
-    }
-
-    .arrow-line {
-      width: 60px;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
-      position: relative;
-    }
-
-    .arrow-line::after {
-      content: '';
-      position: absolute;
-      right: -2px;
-      top: -5px;
-      border: 6px solid transparent;
-      border-left-color: var(--accent-green);
-    }
-
-    .warning-banner {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 14px 18px;
-      background: rgba(245,158,11,0.08);
-      border: 1px solid rgba(245,158,11,0.25);
-      border-radius: var(--radius);
-      margin-top: 20px;
-      font-size: 13px;
-      color: var(--accent-yellow);
-      line-height: 1.5;
-    }
-
-    .section-title {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
-    }
-
-    .risk-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 14px;
-      font-size: 13px;
-      font-weight: 500;
-    }
-
+    .delegation-arrow { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-top: 60px; color: var(--text-muted); font-size: 12px; }
+    .arrow-line { width: 60px; height: 2px; background: linear-gradient(90deg, var(--accent-blue), var(--accent-green)); position: relative; }
+    .arrow-line::after { content: ''; position: absolute; right: -2px; top: -5px; border: 6px solid transparent; border-left-color: var(--accent-green); }
+    .warning-banner { display: flex; align-items: flex-start; gap: 10px; padding: 14px 18px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); border-radius: var(--radius); margin-top: 20px; font-size: 13px; color: var(--accent-yellow); line-height: 1.5; }
+    .section-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+    .risk-label { display: flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 13px; font-weight: 500; }
     .mb-16 { margin-bottom: 16px; }
-
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg-primary); }
     ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
   </style>
 </head>
 <body>
-  <!-- Login Gate -->
   <div class="login-gate active" id="login-gate">
     <div class="login-card">
       <div class="logo-icon">&#x1f6e1;</div>
@@ -741,22 +168,14 @@
     </div>
   </div>
 
-  <!-- App Content -->
   <div id="app-content" style="display: none;">
-    <!-- Header -->
     <div class="header">
       <div class="logo">
         <div class="logo-icon">&#x1f6e1;</div>
-        <div>
-          <h1>ScopeGuard</h1>
-          <span>AI Agent Authorization Console</span>
-        </div>
+        <div><h1>ScopeGuard</h1><span>AI Agent Authorization Console</span></div>
       </div>
       <div class="header-right">
-        <div class="header-badge">
-          <div class="status-dot"></div>
-          Auth0 Token Vault Connected
-        </div>
+        <div class="header-badge"><div class="status-dot"></div>Auth0 Token Vault Connected</div>
         <div class="user-info" id="user-info" style="display: none;">
           <img id="user-avatar" src="" alt="avatar" />
           <span id="user-name"></span>
@@ -765,7 +184,6 @@
       </div>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs">
       <button class="tab active" data-tab="permissions">Permission Dashboard</button>
       <button class="tab" data-tab="agent">Agent Console</button>
@@ -773,7 +191,6 @@
       <button class="tab" data-tab="delegation">Agent Delegation</button>
     </div>
 
-    <!-- Content -->
     <div class="content">
 
       <!-- PERMISSIONS -->
@@ -782,8 +199,6 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
           Token management secured by Auth0 Token Vault &mdash; tokens never touch agent code
         </div>
-
-        <!-- Connect GitHub Card -->
         <div class="connect-github-card" id="connect-github-card">
           <h3>Connect Your GitHub Account</h3>
           <p>ScopeGuard needs access to your GitHub account to manage tokens securely through Auth0 Token Vault. This grants the AI agent least-privilege access to your public repositories.</p>
@@ -794,11 +209,8 @@
             </a>
           </div>
         </div>
-
         <div class="section-title">Connected Accounts</div>
-        <div id="accounts-list">
-          <div style="color: var(--text-muted); padding: 20px; text-align: center;">Loading accounts...</div>
-        </div>
+        <div id="accounts-list"><div style="color: var(--text-muted); padding: 20px; text-align: center;">Loading accounts...</div></div>
       </div>
 
       <!-- AGENT CONSOLE -->
@@ -806,27 +218,44 @@
         <div class="card">
           <div class="card-header">
             <div class="card-title">Agent Console</div>
-            <span class="badge badge-blue">Claude Sonnet</span>
+            <div style="display: flex; gap: 8px;">
+              <span class="badge badge-blue">Primary: Claude Sonnet</span>
+              <span class="badge badge-purple">Sub-Agent: Read Only</span>
+            </div>
           </div>
+
           <div class="agent-input-group">
-            <input type="text" id="agent-query" placeholder="What would you like the agent to do? (e.g., list my repos, create an issue)" />
-            <button class="btn btn-primary" id="run-agent" onclick="runAgent()">Run Agent</button>
+            <input type="text" id="agent-query" placeholder="Enter a command — run as Primary Agent or Sub-Agent to compare permissions" />
           </div>
-          <div id="agent-response" class="response-area">
-            <div style="color: var(--text-muted); text-align: center; padding-top: 60px;">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--border-light)" stroke-width="1.5" style="margin-bottom: 10px;"><circle cx="12" cy="12" r="10"/><path d="M8 15h8M9 9h.01M15 9h.01"/></svg>
-              <div>Enter a command to interact with your GitHub account via the AI agent.</div>
-              <div style="margin-top: 8px; font-size: 12px;">Risk classification is automatic &mdash; high-risk actions require step-up authorization.</div>
+
+          <div class="agent-buttons">
+            <button class="btn btn-primary" id="run-primary" onclick="runAgent('primary')">&#9654; Run as Primary Agent</button>
+            <button class="btn btn-sub" id="run-sub" onclick="runAgent('sub')">&#x1f512; Run as Sub-Agent</button>
+          </div>
+
+          <div class="agent-legend">
+            <span><span class="legend-dot" style="background: var(--accent-blue);"></span> Primary Agent: repo:read, repo:write, issues:write</span>
+            <span><span class="legend-dot" style="background: var(--accent-purple);"></span> Sub-Agent: repo:read, issues:read only</span>
+          </div>
+
+          <div class="response-grid">
+            <div class="response-panel primary-panel" id="primary-response">
+              <div class="response-panel-header"><span class="dot primary-dot"></span> Primary Agent Response</div>
+              <div style="color: var(--text-muted); text-align: center; padding-top: 40px; font-size: 12px;">Click "Run as Primary Agent" to execute</div>
+            </div>
+            <div class="response-panel sub-panel" id="sub-response">
+              <div class="response-panel-header"><span class="dot sub-dot"></span> Sub-Agent Response</div>
+              <div style="color: var(--text-muted); text-align: center; padding-top: 40px; font-size: 12px;">Click "Run as Sub-Agent" to execute</div>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <div class="section-title">Example Commands</div>
+          <div class="section-title">Example Commands — Try Same Command on Both Agents</div>
           <div style="display: flex; flex-wrap: wrap; gap: 8px;">
             <button class="btn btn-outline" onclick="setQuery('List my GitHub repositories')">List my repos</button>
             <button class="btn btn-outline" onclick="setQuery('Show my GitHub issues')">Show issues</button>
-            <button class="btn btn-outline" onclick="setQuery('Create an issue in vidyasarangapany/scopeguard-demo titled Bug Report with body Found a bug')">Create issue</button>
+            <button class="btn btn-outline" onclick="setQuery('Create an issue in vidyasarangapany/scopeguard-demo titled Bug Report with body Found a bug')">Create issue (blocked on sub)</button>
             <button class="btn btn-outline" onclick="setQuery('Delete the repository vidyasarangapany/scopeguard-demo')">Delete repo (high risk)</button>
           </div>
         </div>
@@ -841,16 +270,7 @@
           </div>
           <div style="overflow-x: auto;">
             <table class="audit-table">
-              <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>Action</th>
-                  <th>API</th>
-                  <th>Scope Used</th>
-                  <th>Risk Level</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Timestamp</th><th>Action</th><th>API</th><th>Scope Used</th><th>Risk Level</th><th>Status</th></tr></thead>
               <tbody id="audit-body">
                 <tr><td colspan="6" class="audit-empty">No audit entries yet. Run the agent to generate logs.</td></tr>
               </tbody>
@@ -862,36 +282,28 @@
       <!-- DELEGATION -->
       <div id="delegation" class="panel">
         <div class="section-title mb-16">Agent Delegation Hierarchy</div>
-
         <div class="delegation-grid">
           <div class="agent-card">
             <h3>ScopeGuard Primary Agent</h3>
             <div class="agent-type">Parent Agent &bull; Claude Sonnet</div>
             <div class="section-title">GitHub Scopes</div>
             <div id="parent-scopes"></div>
-            <div class="risk-label">
-              Risk Level: <span class="badge badge-yellow">MEDIUM</span>
-            </div>
+            <div class="risk-label">Risk Level: <span class="badge badge-yellow">MEDIUM</span></div>
           </div>
-
           <div class="delegation-arrow">
             <div style="font-weight: 600;">Scope</div>
             <div class="arrow-line"></div>
             <div>Downward</div>
             <div>scoping only</div>
           </div>
-
           <div class="agent-card">
             <h3>ScopeGuard Sub-Agent</h3>
             <div class="agent-type">Delegated by: Primary Agent</div>
             <div class="section-title">Inherited Scopes</div>
             <div id="sub-scopes"></div>
-            <div class="risk-label">
-              Risk Level: <span class="badge badge-green">LOW</span>
-            </div>
+            <div class="risk-label">Risk Level: <span class="badge badge-green">LOW</span></div>
           </div>
         </div>
-
         <div class="warning-banner">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 1px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <div>
@@ -904,7 +316,7 @@
     </div>
   </div>
 
-  <!-- Step-Up Auth Modal -->
+  <!-- Step-Up Modal -->
   <div class="modal-overlay" id="stepup-modal">
     <div class="modal">
       <h3>
@@ -925,27 +337,16 @@
       try {
         const res = await fetch('/api/me');
         const data = await res.json();
-
         if (data.authenticated) {
           document.getElementById('login-gate').classList.remove('active');
           document.getElementById('app-content').style.display = '';
-
           const user = data.user;
           if (user) {
             const userInfoEl = document.getElementById('user-info');
-            const avatarEl = document.getElementById('user-avatar');
-            const nameEl = document.getElementById('user-name');
-
-            nameEl.textContent = user.name || user.nickname || user.email || 'User';
-            if (user.picture) {
-              avatarEl.src = user.picture;
-              avatarEl.style.display = '';
-            } else {
-              avatarEl.style.display = 'none';
-            }
+            document.getElementById('user-name').textContent = user.name || user.nickname || user.email || 'User';
+            if (user.picture) { document.getElementById('user-avatar').src = user.picture; }
             userInfoEl.style.display = 'flex';
           }
-
           loadPermissions();
           loadDelegation();
         } else {
@@ -953,7 +354,6 @@
           document.getElementById('app-content').style.display = 'none';
         }
       } catch (err) {
-        console.error('Auth check failed:', err);
         document.getElementById('login-gate').classList.add('active');
         document.getElementById('app-content').style.display = 'none';
       }
@@ -975,7 +375,6 @@
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         tab.classList.add('active');
         document.getElementById(tab.dataset.tab).classList.add('active');
-
         if (tab.dataset.tab === 'permissions') loadPermissions();
         if (tab.dataset.tab === 'audit') loadAudit();
         if (tab.dataset.tab === 'delegation') loadDelegation();
@@ -990,20 +389,12 @@
         const data = await res.json();
         const container = document.getElementById('accounts-list');
         const connectCard = document.getElementById('connect-github-card');
-
-        if (data.githubConnected === false) {
-          connectCard.classList.add('visible');
-        } else {
-          connectCard.classList.remove('visible');
-        }
-
+        if (data.githubConnected === false) { connectCard.classList.add('visible'); } else { connectCard.classList.remove('visible'); }
         container.innerHTML = '';
-
         if (data.accounts.length === 0 && data.githubConnected) {
           container.innerHTML = '<div style="color: var(--text-muted); padding: 20px; text-align: center;">No connected accounts.</div>';
           return;
         }
-
         data.accounts.forEach(account => {
           const isActive = account.status === 'active';
           const div = document.createElement('div');
@@ -1028,16 +419,13 @@
                 ? `<button class="btn btn-danger" onclick="revokeAccount('${account.id}')">Revoke Access</button>`
                 : `<button class="btn btn-success" onclick="restoreAccount('${account.id}')">Restore Access</button>`
               }
-              <button class="btn btn-warning" onclick="reconnectGitHub()" title="Forces a fresh token with public_repo scope only">
-                &#x21ba; Reconnect GitHub
-              </button>
+              <button class="btn btn-warning" onclick="reconnectGitHub()">&#x21ba; Reconnect GitHub</button>
             </div>
           `;
           container.appendChild(div);
         });
       } catch (err) {
-        document.getElementById('accounts-list').innerHTML =
-          `<div style="color: var(--accent-red); padding: 20px;">Failed to load permissions: ${err.message}</div>`;
+        document.getElementById('accounts-list').innerHTML = `<div style="color: var(--accent-red); padding: 20px;">Failed to load permissions: ${err.message}</div>`;
       }
     }
 
@@ -1047,43 +435,41 @@
       }
     }
 
-    async function revokeAccount(accountId) {
-      await authFetch(`/permissions/revoke/${accountId}`, { method: 'POST' });
-      loadPermissions();
-    }
+    async function revokeAccount(accountId) { await authFetch(`/permissions/revoke/${accountId}`, { method: 'POST' }); loadPermissions(); }
+    async function restoreAccount(accountId) { await authFetch(`/permissions/restore/${accountId}`, { method: 'POST' }); loadPermissions(); }
 
-    async function restoreAccount(accountId) {
-      await authFetch(`/permissions/restore/${accountId}`, { method: 'POST' });
-      loadPermissions();
-    }
-
+    // ===== Agent Console =====
     let pendingStepUpAction = null;
 
-    function setQuery(q) {
-      document.getElementById('agent-query').value = q;
-    }
+    function setQuery(q) { document.getElementById('agent-query').value = q; }
 
-    async function runAgent() {
+    const riskBadge = {
+      low: '<span class="badge badge-green">LOW RISK</span>',
+      medium: '<span class="badge badge-yellow">MEDIUM RISK</span>',
+      high: '<span class="badge badge-red">HIGH RISK</span>'
+    };
+
+    async function runAgent(agentType) {
       const query = document.getElementById('agent-query').value.trim();
       if (!query) return;
 
-      const responseArea = document.getElementById('agent-response');
-      const btn = document.getElementById('run-agent');
+      const isPrimary = agentType === 'primary';
+      const panelId = isPrimary ? 'primary-response' : 'sub-response';
+      const btnId = isPrimary ? 'run-primary' : 'run-sub';
+      const panel = document.getElementById(panelId);
+      const btn = document.getElementById(btnId);
+
       btn.disabled = true;
       btn.textContent = 'Running...';
 
-      responseArea.innerHTML = `
-        <div class="thinking">
-          <span>Agent is processing</span>
-          <span class="dots"><span>.</span><span>.</span><span>.</span></span>
-        </div>
-        <div style="margin-top: 12px; color: var(--text-muted); font-size: 12px;">
-          Classifying risk level with Claude &rarr; Fetching token from Auth0 Vault &rarr; Executing action
-        </div>
+      panel.innerHTML = `
+        <div class="response-panel-header"><span class="dot ${isPrimary ? 'primary' : 'sub'}-dot"></span> ${isPrimary ? 'Primary Agent' : 'Sub-Agent'} Response</div>
+        <div class="thinking"><span>Processing</span><span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
       `;
 
       try {
-        const res = await authFetch('/agent', {
+        const endpoint = isPrimary ? '/agent' : '/agent/sub';
+        const res = await authFetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query })
@@ -1091,109 +477,93 @@
         const data = await res.json();
 
         if (data.error) {
-          responseArea.innerHTML = `<div style="color: var(--accent-red);">Error: ${data.error}</div>`;
+          panel.innerHTML = `<div class="response-panel-header"><span class="dot ${isPrimary ? 'primary' : 'sub'}-dot"></span> ${isPrimary ? 'Primary Agent' : 'Sub-Agent'} Response</div><div style="color: var(--accent-red);">Error: ${data.error}</div>`;
           btn.disabled = false;
-          btn.textContent = 'Run Agent';
+          btn.textContent = isPrimary ? '▶ Run as Primary Agent' : '🔒 Run as Sub-Agent';
           return;
         }
 
+        // Sub-agent scope block
+        if (data.blocked) {
+          panel.innerHTML = `
+            <div class="response-panel-header"><span class="dot sub-dot"></span> Sub-Agent Response</div>
+            <div class="response-header">${riskBadge[data.risk] || ''}<span style="color: var(--text-secondary);">Action: ${data.action}</span></div>
+            <div class="blocked-banner">
+              &#x1f6ab; <strong>Scope Escalation Blocked</strong><br>${data.result.data.message}
+            </div>
+          `;
+          btn.disabled = false;
+          btn.textContent = '🔒 Run as Sub-Agent';
+          return;
+        }
+
+        // Step-up for high risk (primary only)
         if (data.stepUpRequired) {
           pendingStepUpAction = data.action;
           document.getElementById('stepup-action').textContent = `Action: ${data.action}`;
           document.getElementById('stepup-modal').classList.add('active');
-          responseArea.innerHTML = `
-            <div class="response-header">
-              <span class="badge badge-red">HIGH RISK</span>
-              <span>Step-up authorization required</span>
-            </div>
+          panel.innerHTML = `
+            <div class="response-panel-header"><span class="dot primary-dot"></span> Primary Agent Response</div>
+            <div class="response-header"><span class="badge badge-red">HIGH RISK</span><span>Step-up authorization required</span></div>
             <div>${data.message}</div>
           `;
           btn.disabled = false;
-          btn.textContent = 'Run Agent';
+          btn.textContent = '▶ Run as Primary Agent';
           return;
         }
 
-        renderAgentResponse(data);
+        renderResponse(panel, data, isPrimary);
       } catch (err) {
-        responseArea.innerHTML = `<div style="color: var(--accent-red);">Error: ${err.message}</div>`;
+        panel.innerHTML = `<div class="response-panel-header"><span class="dot ${isPrimary ? 'primary' : 'sub'}-dot"></span> Response</div><div style="color: var(--accent-red);">Error: ${err.message}</div>`;
       }
 
       btn.disabled = false;
-      btn.textContent = 'Run Agent';
+      btn.textContent = isPrimary ? '▶ Run as Primary Agent' : '🔒 Run as Sub-Agent';
     }
 
-    function renderAgentResponse(data) {
-      const responseArea = document.getElementById('agent-response');
-      const riskBadge = {
-        low: '<span class="badge badge-green">LOW RISK</span>',
-        medium: '<span class="badge badge-yellow">MEDIUM RISK</span>',
-        high: '<span class="badge badge-red">HIGH RISK</span>'
-      };
-
+    function renderResponse(panel, data, isPrimary) {
       let resultHtml = '';
-
       if (data.result) {
         switch (data.result.type) {
           case 'repos':
             resultHtml = data.result.data.map(r => `
               <div class="result-item">
                 <strong><a href="${r.url}" target="_blank">${r.name}</a></strong>
-                ${r.private ? '<span class="badge badge-yellow" style="margin-left:6px;">Private</span>' : ''}
                 ${r.description ? `<div style="color: var(--text-muted); margin-top: 4px;">${r.description}</div>` : ''}
                 <div style="color: var(--text-muted); margin-top: 4px; font-size: 11px;">${r.language || 'Unknown'} &bull; ${r.stars} stars &bull; Updated ${new Date(r.updated).toLocaleDateString()}</div>
-              </div>
-            `).join('');
+              </div>`).join('');
             break;
           case 'issues':
             resultHtml = data.result.data.length > 0
-              ? data.result.data.map(i => `
-                <div class="result-item">
-                  <strong><a href="${i.url}" target="_blank">#${i.number}: ${i.title}</a></strong>
-                  <span class="badge ${i.state === 'open' ? 'badge-green' : 'badge-purple'}" style="margin-left:6px;">${i.state}</span>
-                  ${i.repo ? `<div style="color: var(--text-muted); margin-top: 4px; font-size: 11px;">${i.repo}</div>` : ''}
-                </div>
-              `).join('')
+              ? data.result.data.map(i => `<div class="result-item"><strong><a href="${i.url}" target="_blank">#${i.number}: ${i.title}</a></strong><span class="badge ${i.state === 'open' ? 'badge-green' : 'badge-purple'}" style="margin-left:6px;">${i.state}</span></div>`).join('')
               : '<div class="result-item">No issues found.</div>';
             break;
           case 'issue_created':
-            resultHtml = `
-              <div class="result-item" style="border-color: var(--accent-green);">
-                Issue created: <strong><a href="${data.result.data.url}" target="_blank">#${data.result.data.number}: ${data.result.data.title}</a></strong>
-              </div>
-            `;
+            resultHtml = `<div class="result-item" style="border-color: var(--accent-green);">Issue created: <strong><a href="${data.result.data.url}" target="_blank">#${data.result.data.number}: ${data.result.data.title}</a></strong></div>`;
             break;
           case 'user':
-            resultHtml = `
-              <div class="result-item">
-                <strong><a href="${data.result.data.url}" target="_blank">${data.result.data.login}</a></strong>
-                ${data.result.data.name ? ` &mdash; ${data.result.data.name}` : ''}
-                <div style="color: var(--text-muted); margin-top: 4px;">Public repos: ${data.result.data.public_repos}</div>
-              </div>
-            `;
+            resultHtml = `<div class="result-item"><strong><a href="${data.result.data.url}" target="_blank">${data.result.data.login}</a></strong>${data.result.data.name ? ` &mdash; ${data.result.data.name}` : ''}<div style="color: var(--text-muted); margin-top: 4px;">Public repos: ${data.result.data.public_repos}</div></div>`;
             break;
           case 'high_risk_confirmed':
-            resultHtml = `<div class="result-item" style="border-color: var(--accent-yellow);">${data.result.data.message}</div>`;
-            break;
           case 'high_risk_blocked':
-            resultHtml = `<div class="result-item" style="border-color: var(--accent-red); background: var(--accent-red-dim);">${data.result.data.message}</div>`;
+            resultHtml = `<div class="result-item" style="border-color: var(--accent-red);">${data.result.data.message}</div>`;
             break;
           default:
-            resultHtml = `<div class="result-item">${JSON.stringify(data.result.data, null, 2)}</div>`;
+            resultHtml = `<div class="result-item">${JSON.stringify(data.result.data)}</div>`;
         }
       }
 
-      responseArea.innerHTML = `
-        <div class="response-header">
-          ${riskBadge[data.risk] || ''}
-          <span style="color: var(--text-secondary);">Action: ${data.action}</span>
-        </div>
+      const dotClass = isPrimary ? 'primary-dot' : 'sub-dot';
+      const label = isPrimary ? 'Primary Agent Response' : 'Sub-Agent Response';
+      panel.innerHTML = `
+        <div class="response-panel-header"><span class="dot ${dotClass}"></span> ${label}</div>
+        <div class="response-header">${riskBadge[data.risk] || ''}<span style="color: var(--text-secondary);">Action: ${data.action}</span></div>
         ${resultHtml}
       `;
     }
 
     async function handleStepUp(approved) {
       document.getElementById('stepup-modal').classList.remove('active');
-
       try {
         const res = await authFetch('/agent/confirm', {
           method: 'POST',
@@ -1201,73 +571,40 @@
           body: JSON.stringify({ action: pendingStepUpAction, approved })
         });
         const data = await res.json();
-
-        const responseArea = document.getElementById('agent-response');
-
+        const panel = document.getElementById('primary-response');
         if (approved) {
-          renderAgentResponse({
-            risk: 'high',
-            action: pendingStepUpAction,
-            result: data.result || { type: 'high_risk_blocked', data: { message: data.message } }
-          });
+          renderResponse(panel, { risk: 'high', action: pendingStepUpAction, result: data.result || { type: 'high_risk_blocked', data: { message: data.message } } }, true);
         } else {
-          responseArea.innerHTML = `
-            <div class="response-header">
-              <span class="badge badge-red">DENIED</span>
-              <span style="color: var(--text-secondary);">${pendingStepUpAction}</span>
-            </div>
+          panel.innerHTML = `
+            <div class="response-panel-header"><span class="dot primary-dot"></span> Primary Agent Response</div>
+            <div class="response-header"><span class="badge badge-red">DENIED</span><span style="color: var(--text-secondary);">${pendingStepUpAction}</span></div>
             <div class="result-item" style="border-color: var(--accent-red);">${data.message}</div>
           `;
         }
       } catch (err) {
-        document.getElementById('agent-response').innerHTML =
-          `<div style="color: var(--accent-red);">Error: ${err.message}</div>`;
+        document.getElementById('primary-response').innerHTML = `<div style="color: var(--accent-red);">Error: ${err.message}</div>`;
       }
-
       pendingStepUpAction = null;
     }
 
-    document.getElementById('agent-query').addEventListener('keydown', e => {
-      if (e.key === 'Enter') runAgent();
-    });
+    document.getElementById('agent-query').addEventListener('keydown', e => { if (e.key === 'Enter') runAgent('primary'); });
 
     async function loadAudit() {
       try {
         const res = await authFetch('/audit-log');
         const data = await res.json();
         const tbody = document.getElementById('audit-body');
-
         if (!data.logs || data.logs.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" class="audit-empty">No audit entries yet. Run the agent to generate logs.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6" class="audit-empty">No audit entries yet.</td></tr>';
           return;
         }
-
         tbody.innerHTML = data.logs.map(log => {
-          const riskBadge = {
-            low: '<span class="badge badge-green">LOW</span>',
-            medium: '<span class="badge badge-yellow">MEDIUM</span>',
-            high: '<span class="badge badge-red">HIGH</span>'
-          };
-          const statusBadge = {
-            success: '<span class="badge badge-green">Success</span>',
-            denied: '<span class="badge badge-red">Denied</span>',
-            blocked: '<span class="badge badge-red">Blocked</span>',
-            pending: '<span class="badge badge-yellow">Pending</span>',
-            error: '<span class="badge badge-red">Error</span>'
-          };
-
-          return `<tr>
-            <td>${new Date(log.timestamp).toLocaleString()}</td>
-            <td>${log.action}</td>
-            <td>${log.api}</td>
-            <td><span class="scope-badge">${log.scope_used}</span></td>
-            <td>${riskBadge[log.risk_level] || log.risk_level}</td>
-            <td>${statusBadge[log.status] || log.status}</td>
-          </tr>`;
+          const rb = { low: '<span class="badge badge-green">LOW</span>', medium: '<span class="badge badge-yellow">MEDIUM</span>', high: '<span class="badge badge-red">HIGH</span>' };
+          const sb = { success: '<span class="badge badge-green">Success</span>', denied: '<span class="badge badge-red">Denied</span>', blocked: '<span class="badge badge-red">Blocked</span>', pending: '<span class="badge badge-yellow">Pending</span>', error: '<span class="badge badge-red">Error</span>' };
+          return `<tr><td>${new Date(log.timestamp).toLocaleString()}</td><td>${log.action}</td><td>${log.api}</td><td><span class="scope-badge">${log.scope_used}</span></td><td>${rb[log.risk_level] || log.risk_level}</td><td>${sb[log.status] || log.status}</td></tr>`;
         }).join('');
       } catch (err) {
-        document.getElementById('audit-body').innerHTML =
-          `<tr><td colspan="6" class="audit-empty" style="color: var(--accent-red);">Failed to load: ${err.message}</td></tr>`;
+        document.getElementById('audit-body').innerHTML = `<tr><td colspan="6" class="audit-empty" style="color: var(--accent-red);">Failed to load: ${err.message}</td></tr>`;
       }
     }
 
@@ -1275,23 +612,9 @@
       try {
         const res = await authFetch('/delegation');
         const data = await res.json();
-
-        document.getElementById('parent-scopes').innerHTML = data.parentAgent.scopes.map(s => `
-          <div class="agent-scope-row">
-            <span>${s.name}</span>
-            <span class="scope-status-granted">GRANTED</span>
-          </div>
-        `).join('');
-
-        document.getElementById('sub-scopes').innerHTML = data.subAgent.scopes.map(s => `
-          <div class="agent-scope-row">
-            <span>${s.name}</span>
-            <span class="scope-status-${s.status}">${s.status === 'blocked' ? 'BLOCKED' : 'INHERITED'}</span>
-          </div>
-        `).join('');
-      } catch (err) {
-        console.error('Failed to load delegation:', err);
-      }
+        document.getElementById('parent-scopes').innerHTML = data.parentAgent.scopes.map(s => `<div class="agent-scope-row"><span>${s.name}</span><span class="scope-status-granted">GRANTED</span></div>`).join('');
+        document.getElementById('sub-scopes').innerHTML = data.subAgent.scopes.map(s => `<div class="agent-scope-row"><span>${s.name}</span><span class="scope-status-${s.status}">${s.status === 'blocked' ? 'BLOCKED' : 'INHERITED'}</span></div>`).join('');
+      } catch (err) { console.error('Failed to load delegation:', err); }
     }
 
     checkAuth();

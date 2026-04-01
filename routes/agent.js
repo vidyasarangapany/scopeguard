@@ -13,23 +13,8 @@ const management = new ManagementClient({
   clientSecret: process.env.AUTH0_MANAGEMENT_CLIENT_SECRET || process.env.AUTH0_AGENT_CLIENT_SECRET
 });
 
-const RISK_CLASSIFICATIONS = {
-  low: {
-    actions: ['list repos', 'list repositories', 'show repos', 'get repos', 'view profile', 'list issues', 'show issues'],
-    scopes: ['read'],
-    description: 'Read-only operations'
-  },
-  medium: {
-    actions: ['create issue', 'open issue', 'comment on issue', 'add comment', 'create gist'],
-    scopes: ['read', 'issues:write'],
-    description: 'Write operations within limited scope'
-  },
-  high: {
-    actions: ['delete repo', 'delete repository', 'transfer repo', 'change visibility', 'remove collaborator', 'delete branch', 'force push'],
-    scopes: ['read', 'write', 'admin'],
-    description: 'Destructive or administrative operations'
-  }
-};
+// Sub-agent allowed actions — read only, no write
+const SUB_AGENT_ALLOWED = ['list_repos', 'list_issues', 'get_user'];
 
 async function classifyWithClaude(query) {
   const message = await anthropic.messages.create({
@@ -65,7 +50,6 @@ Respond in JSON format only, no markdown:
 
 async function getGitHubToken(userId) {
   try {
-    // Retrieve user from Auth0 Management API — includes linked identities
     const user = await management.users.get({ id: userId });
     const identities = user.data?.identities || user.identities || [];
     const githubIdentity = identities.find(i => i.provider === 'github');
@@ -122,7 +106,7 @@ async function executeGitHubAction(classification, githubToken) {
 
   switch (github_action) {
     case 'list_repos': {
-      // FIXED: visibility=public enforces least-privilege — no private repos returned
+      // FIXED: visibility=public enforces least-privilege
       const res = await fetch('https://api.github.com/user/repos?sort=updated&per_page=10&visibility=public&affiliation=owner', { headers });
       if (!res.ok) {
         const errText = await res.text();
@@ -195,19 +179,16 @@ async function executeGitHubAction(classification, githubToken) {
   }
 }
 
+// ===== PRIMARY AGENT =====
 router.post('/', async (req, res) => {
   const { query } = req.body;
   const userId = req.oidc.user.sub;
 
-  if (!query) {
-    return res.status(400).json({ error: 'Query is required' });
-  }
+  if (!query) return res.status(400).json({ error: 'Query is required' });
 
   try {
-    // Step 1: Classify with Claude
     const classification = await classifyWithClaude(query);
 
-    // Step 2: Check for high risk - require step-up auth
     if (classification.risk === 'high') {
       logAction({
         action: classification.action,
@@ -216,7 +197,7 @@ router.post('/', async (req, res) => {
         risk_level: 'high',
         status: 'pending',
         user_id: userId,
-        details: 'Step-up authorization required'
+        details: 'Step-up authorization required — Primary Agent'
       });
 
       return res.json({
@@ -224,44 +205,26 @@ router.post('/', async (req, res) => {
         risk: 'high',
         action: classification.action,
         message: 'This action requires re-authorization. High-risk operations need explicit approval.',
-        classification
+        classification,
+        agent: 'primary'
       });
     }
 
-    // Step 3: Get GitHub token from Auth0 Token Vault
     const githubToken = await getGitHubToken(userId);
-
     if (!githubToken) {
-      logAction({
-        action: classification.action,
-        api: 'GitHub',
-        scope_used: classification.risk === 'low' ? 'read' : 'issues:write',
-        risk_level: classification.risk,
-        status: 'error',
-        user_id: userId,
-        details: 'Failed to obtain GitHub token from Auth0 Token Vault'
-      });
-
-      return res.status(500).json({
-        error: 'Unable to obtain GitHub access token',
-        risk: classification.risk,
-        action: classification.action
-      });
+      return res.status(500).json({ error: 'Unable to obtain GitHub access token', risk: classification.risk, action: classification.action });
     }
 
-    // Step 4: Execute GitHub action
     const result = await executeGitHubAction(classification, githubToken);
-
-    const scopeUsed = classification.risk === 'low' ? 'read' : 'issues:write';
 
     logAction({
       action: classification.action,
       api: 'GitHub',
-      scope_used: scopeUsed,
+      scope_used: classification.risk === 'low' ? 'repo:read' : 'issues:write',
       risk_level: classification.risk,
       status: 'success',
       user_id: userId,
-      details: JSON.stringify(result.data).substring(0, 500)
+      details: `[Primary Agent] ${JSON.stringify(result.data).substring(0, 400)}`
     });
 
     return res.json({
@@ -269,57 +232,102 @@ router.post('/', async (req, res) => {
       risk: classification.risk,
       action: classification.action,
       result,
-      classification
+      classification,
+      agent: 'primary'
     });
 
   } catch (err) {
-    console.error('Agent error:', err);
-
-    logAction({
-      action: query,
-      api: 'GitHub',
-      scope_used: 'unknown',
-      risk_level: 'medium',
-      status: 'error',
-      user_id: userId,
-      details: err.message
-    });
-
+    console.error('Primary agent error:', err);
+    logAction({ action: query, api: 'GitHub', scope_used: 'unknown', risk_level: 'medium', status: 'error', user_id: userId, details: err.message });
     return res.status(500).json({ error: err.message });
   }
 });
 
-// Step-up auth confirmation endpoint
+// ===== SUB-AGENT =====
+// Enforces downward scoping: only list_repos, list_issues, get_user allowed
+router.post('/sub', async (req, res) => {
+  const { query } = req.body;
+  const userId = req.oidc.user.sub;
+
+  if (!query) return res.status(400).json({ error: 'Query is required' });
+
+  try {
+    const classification = await classifyWithClaude(query);
+
+    // Sub-agent scope enforcement — block anything not in allowed list
+    const isAllowed = SUB_AGENT_ALLOWED.includes(classification.github_action);
+
+    if (!isAllowed) {
+      logAction({
+        action: classification.action,
+        api: 'GitHub',
+        scope_used: classification.risk === 'high' ? 'admin' : 'issues:write',
+        risk_level: classification.risk,
+        status: 'blocked',
+        user_id: userId,
+        details: `[Sub-Agent] Scope escalation blocked — action "${classification.github_action}" exceeds delegated permissions (repo:read only)`
+      });
+
+      return res.json({
+        stepUpRequired: false,
+        risk: classification.risk,
+        action: classification.action,
+        blocked: true,
+        agent: 'sub',
+        result: {
+          type: 'scope_blocked',
+          data: {
+            message: `Sub-Agent blocked: "${classification.action}" requires write permissions not granted to this agent. Sub-Agent is limited to read:repo and read:issues only. Scope escalation logged.`
+          }
+        }
+      });
+    }
+
+    // Allowed — execute with Token Vault token (same token, enforced by action whitelist)
+    const githubToken = await getGitHubToken(userId);
+    if (!githubToken) {
+      return res.status(500).json({ error: 'Unable to obtain GitHub access token' });
+    }
+
+    const result = await executeGitHubAction(classification, githubToken);
+
+    logAction({
+      action: classification.action,
+      api: 'GitHub',
+      scope_used: 'repo:read',
+      risk_level: 'low',
+      status: 'success',
+      user_id: userId,
+      details: `[Sub-Agent] ${JSON.stringify(result.data).substring(0, 400)}`
+    });
+
+    return res.json({
+      stepUpRequired: false,
+      risk: 'low',
+      action: classification.action,
+      result,
+      classification,
+      agent: 'sub'
+    });
+
+  } catch (err) {
+    console.error('Sub-agent error:', err);
+    logAction({ action: query, api: 'GitHub', scope_used: 'repo:read', risk_level: 'low', status: 'error', user_id: userId, details: `[Sub-Agent] ${err.message}` });
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// ===== STEP-UP CONFIRMATION =====
 router.post('/confirm', async (req, res) => {
   const { action, approved } = req.body;
   const userId = req.oidc.user.sub;
 
   if (!approved) {
-    logAction({
-      action: action || 'unknown',
-      api: 'GitHub',
-      scope_used: 'admin',
-      risk_level: 'high',
-      status: 'denied',
-      user_id: userId,
-      details: 'User denied step-up authorization'
-    });
-
-    return res.json({
-      status: 'denied',
-      message: 'High-risk action was denied by the user.'
-    });
+    logAction({ action: action || 'unknown', api: 'GitHub', scope_used: 'admin', risk_level: 'high', status: 'denied', user_id: userId, details: 'User denied step-up authorization' });
+    return res.json({ status: 'denied', message: 'High-risk action was denied by the user.' });
   }
 
-  logAction({
-    action: action || 'unknown',
-    api: 'GitHub',
-    scope_used: 'admin',
-    risk_level: 'high',
-    status: 'blocked',
-    user_id: userId,
-    details: 'Step-up authorization granted but action blocked in demo mode for safety'
-  });
+  logAction({ action: action || 'unknown', api: 'GitHub', scope_used: 'admin', risk_level: 'high', status: 'blocked', user_id: userId, details: 'Step-up granted but action blocked in demo mode for safety' });
 
   return res.json({
     status: 'blocked',
