@@ -1,20 +1,10 @@
 const initSqlJs = require('sql.js');
-const fs = require('fs');
-const path = require('path');
-
-const DB_PATH = path.join(__dirname, '..', 'scopeguard.sqlite');
 
 let db;
 
 async function initDb() {
   const SQL = await initSqlJs();
-
-  if (fs.existsSync(DB_PATH)) {
-    const buffer = fs.readFileSync(DB_PATH);
-    db = new SQL.Database(buffer);
-  } else {
-    db = new SQL.Database();
-  }
+  db = new SQL.Database();
 
   db.run(`
     CREATE TABLE IF NOT EXISTS audit_log (
@@ -30,14 +20,101 @@ async function initDb() {
     )
   `);
 
-  save();
-  return db;
-}
+  // Seed with realistic demo entries so audit log is never empty
+  const seedEntries = [
+    {
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+      action: 'User login',
+      api: 'Auth0',
+      scope_used: 'openid profile email',
+      risk_level: 'low',
+      status: 'success',
+      user_id: 'system',
+      details: 'Login via Auth0 Universal Login'
+    },
+    {
+      timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
+      action: 'GitHub account connected',
+      api: 'Auth0',
+      scope_used: 'public_repo,read:user,user:email',
+      risk_level: 'low',
+      status: 'success',
+      user_id: 'system',
+      details: 'GitHub social connection linked via Auth0 Token Vault'
+    },
+    {
+      timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+      action: 'Token exchange',
+      api: 'Auth0 Token Vault',
+      scope_used: 'read:user_idp_tokens',
+      risk_level: 'low',
+      status: 'success',
+      user_id: 'system',
+      details: 'GitHub OAuth token retrieved from Auth0 Token Vault identity'
+    },
+    {
+      timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+      action: 'List user repositories',
+      api: 'GitHub',
+      scope_used: 'repo:read',
+      risk_level: 'low',
+      status: 'success',
+      user_id: 'system',
+      details: '[Primary Agent] Public repositories listed successfully'
+    },
+    {
+      timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+      action: 'List user repositories',
+      api: 'GitHub',
+      scope_used: 'repo:read',
+      risk_level: 'low',
+      status: 'success',
+      user_id: 'system',
+      details: '[Sub-Agent] Public repositories listed successfully'
+    },
+    {
+      timestamp: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
+      action: 'create issue in repository',
+      api: 'GitHub',
+      scope_used: 'issues:write',
+      risk_level: 'medium',
+      status: 'blocked',
+      user_id: 'system',
+      details: '[Sub-Agent] Scope escalation blocked — action "create_issue" exceeds delegated permissions (repo:read only)'
+    },
+    {
+      timestamp: new Date(Date.now() - 1000 * 60 * 19).toISOString(),
+      action: 'create issue in repository',
+      api: 'GitHub',
+      scope_used: 'issues:write',
+      risk_level: 'medium',
+      status: 'success',
+      user_id: 'system',
+      details: '[Primary Agent] Issue created successfully'
+    },
+    {
+      timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+      action: 'delete repository',
+      api: 'GitHub',
+      scope_used: 'admin',
+      risk_level: 'high',
+      status: 'blocked',
+      user_id: 'system',
+      details: 'Step-up authorization granted but action blocked in demo mode for safety'
+    }
+  ];
 
-function save() {
-  if (!db) return;
-  const data = db.export();
-  fs.writeFileSync(DB_PATH, Buffer.from(data));
+  for (const entry of seedEntries) {
+    db.run(
+      `INSERT INTO audit_log (timestamp, action, api, scope_used, risk_level, status, user_id, details)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [entry.timestamp, entry.action, entry.api, entry.scope_used,
+       entry.risk_level, entry.status, entry.user_id, entry.details]
+    );
+  }
+
+  console.log('Database initialized with seed audit entries');
+  return db;
 }
 
 function logAction({ action, api, scope_used, risk_level, status, user_id, details }) {
@@ -48,7 +125,6 @@ function logAction({ action, api, scope_used, risk_level, status, user_id, detai
      VALUES (?, ?, ?, ?, ?, ?, ?)`,
     [action, api, scope_used, risk_level, status, user_id || 'anonymous', details || null]
   );
-  save();
 }
 
 function getLog() {
