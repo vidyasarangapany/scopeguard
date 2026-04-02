@@ -1,166 +1,189 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 780" width="1100" height="780">
+<svg viewBox="0 0 900 820" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Segoe UI', Arial, sans-serif;">
   <defs>
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0a0e1a"/>
-      <stop offset="100%" stop-color="#111827"/>
-    </linearGradient>
-    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#10b981"/>
-    </linearGradient>
-    <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1e3a5f"/>
-      <stop offset="100%" stop-color="#172a45"/>
-    </linearGradient>
-    <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0f3d2e"/>
-      <stop offset="100%" stop-color="#0a2a1f"/>
-    </linearGradient>
-    <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2d1b69"/>
-      <stop offset="100%" stop-color="#1f1349"/>
-    </linearGradient>
-    <linearGradient id="redGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#5c1a1a"/>
-      <stop offset="100%" stop-color="#3b1111"/>
-    </linearGradient>
-    <linearGradient id="orangeGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#4a3010"/>
-      <stop offset="100%" stop-color="#33210b"/>
-    </linearGradient>
-    <filter id="shadow">
-      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.4"/>
-    </filter>
-    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowYellow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowPurple" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#8b5cf6"/>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowRed" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444"/>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
   </defs>
 
   <!-- Background -->
-  <rect width="1100" height="780" fill="url(#bgGrad)" rx="12"/>
-  <rect x="0" y="0" width="1100" height="4" fill="url(#accentGrad)" rx="2"/>
+  <rect width="900" height="820" fill="#0a0e1a"/>
 
   <!-- Title -->
-  <text x="550" y="42" text-anchor="middle" fill="url(#accentGrad)" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="1">SCOPEGUARD SYSTEM ARCHITECTURE</text>
-  <text x="550" y="62" text-anchor="middle" fill="#64748b" font-family="Segoe UI, Arial, sans-serif" font-size="12" letter-spacing="0.5">Least-Privilege AI Agent Authorization Console</text>
+  <text x="450" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#3b82f6" letter-spacing="2">SCOPEGUARD SYSTEM ARCHITECTURE</text>
+  <text x="450" y="52" text-anchor="middle" font-size="12" fill="#64748b">Least-Privilege AI Agent Authorization Console — with Real Sub-Agent Enforcement</text>
 
-  <!-- ========== COMPONENT BOXES ========== -->
+  <!-- User -->
+  <rect x="325" y="68" width="250" height="52" rx="10" fill="#1a2235" stroke="#2a3f5f" stroke-width="1"/>
+  <text x="365" y="90" font-size="11" fill="#64748b">&#128100;</text>
+  <text x="450" y="90" text-anchor="middle" font-size="14" font-weight="600" fill="#e2e8f0">User</text>
+  <text x="450" y="108" text-anchor="middle" font-size="11" fill="#64748b">Web Browser</text>
 
-  <!-- User / Browser -->
-  <rect x="435" y="85" width="230" height="58" rx="10" fill="url(#blueGrad)" stroke="#2a4a7f" stroke-width="1.5" filter="url(#shadow)"/>
-  <circle cx="470" cy="114" r="14" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
-  <circle cx="470" cy="108" r="5" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
-  <path d="M458 124 a12 8 0 0 1 24 0" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
-  <text x="495" y="109" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">User</text>
-  <text x="495" y="126" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">Web Browser</text>
+  <!-- User to UI -->
+  <line x1="450" y1="120" x2="450" y2="148" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+  <text x="462" y="139" font-size="10" fill="#3b82f6">HTTP Requests</text>
 
   <!-- ScopeGuard UI -->
-  <rect x="400" y="195" width="300" height="62" rx="10" fill="url(#blueGrad)" stroke="#2a4a7f" stroke-width="1.5" filter="url(#shadow)"/>
-  <rect x="428" y="215" width="18" height="14" rx="2" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
-  <line x1="428" y1="220" x2="446" y2="220" stroke="#3b82f6" stroke-width="1"/>
-  <text x="456" y="222" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">ScopeGuard UI</text>
-  <text x="456" y="239" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">Vanilla HTML / CSS / JS</text>
+  <rect x="300" y="150" width="300" height="52" rx="10" fill="#1a2235" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="450" y="172" text-anchor="middle" font-size="14" font-weight="600" fill="#e2e8f0">ScopeGuard UI</text>
+  <text x="450" y="190" text-anchor="middle" font-size="11" fill="#64748b">Vanilla HTML / CSS / JS</text>
+
+  <!-- UI to Backend -->
+  <line x1="450" y1="202" x2="450" y2="230" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+  <text x="462" y="221" font-size="10" fill="#10b981">REST API calls</text>
 
   <!-- Express Backend -->
-  <rect x="365" y="330" width="370" height="70" rx="12" fill="url(#greenGrad)" stroke="#1a5c3a" stroke-width="2" filter="url(#shadow)"/>
-  <rect x="365" y="330" width="370" height="70" rx="12" fill="none" stroke="url(#accentGrad)" stroke-width="1" opacity="0.3"/>
-  <text x="550" y="360" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">Express Backend</text>
-  <text x="550" y="380" text-anchor="middle" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12">Node.js · Port 4000 · REST API</text>
+  <rect x="250" y="232" width="400" height="52" rx="10" fill="#0d3320" stroke="#10b981" stroke-width="1.5"/>
+  <text x="450" y="254" text-anchor="middle" font-size="14" font-weight="700" fill="#e2e8f0">Express Backend</text>
+  <text x="450" y="272" text-anchor="middle" font-size="11" fill="#6ee7b7">Node.js · Auth0 OIDC · REST API</text>
 
-  <!-- Claude Sonnet -->
-  <rect x="50" y="470" width="230" height="68" rx="10" fill="url(#purpleGrad)" stroke="#4c2f99" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="165" y="498" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">Claude Sonnet</text>
-  <text x="165" y="518" text-anchor="middle" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="11">Risk Classifier &amp; Action Planner</text>
+  <!-- Backend splits LEFT to Primary Agent -->
+  <path d="M330 284 L330 310 L180 310 L180 336" stroke="#3b82f6" stroke-width="1.5" fill="none" marker-end="url(#arrow-blue)" stroke-dasharray="none"/>
+  <text x="220" y="305" font-size="10" fill="#3b82f6">/agent</text>
+
+  <!-- Backend splits RIGHT to Sub Agent -->
+  <path d="M570 284 L570 310 L720 310 L720 336" stroke="#8b5cf6" stroke-width="1.5" fill="none" marker-end="url(#arrow-purple)"/>
+  <text x="630" y="305" font-size="10" fill="#8b5cf6">/agent/sub</text>
+
+  <!-- Backend DOWN to Auth0 Token Vault (center path) -->
+  <line x1="450" y1="284" x2="450" y2="490" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="462" y="400" font-size="10" fill="#f59e0b">Request OAuth token</text>
+
+  <!-- Backend to Audit Log (right) -->
+  <path d="M650 258 L820 258 L820 580" stroke="#ef4444" stroke-width="1" fill="none" stroke-dasharray="4,3" marker-end="url(#arrow-red)"/>
+  <text x="735" y="252" font-size="10" fill="#ef4444">Log all actions</text>
+
+  <!-- PRIMARY AGENT -->
+  <rect x="60" y="338" width="240" height="56" rx="10" fill="#1e3a5f" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="180" y="360" text-anchor="middle" font-size="14" font-weight="600" fill="#93c5fd">Primary Agent</text>
+  <text x="180" y="378" text-anchor="middle" font-size="11" fill="#64748b">repo:read · repo:write · issues:write</text>
+
+  <!-- SUB AGENT -->
+  <rect x="600" y="338" width="240" height="56" rx="10" fill="#2d1f5e" stroke="#8b5cf6" stroke-width="1.5"/>
+  <text x="720" y="360" text-anchor="middle" font-size="14" font-weight="600" fill="#c4b5fd">Sub-Agent</text>
+  <text x="720" y="378" text-anchor="middle" font-size="11" fill="#64748b">repo:read · issues:read ONLY</text>
+
+  <!-- Primary Agent to Claude Sonnet -->
+  <line x1="180" y1="394" x2="180" y2="436" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+  <text x="116" y="420" font-size="10" fill="#f59e0b">Classify risk</text>
+
+  <!-- Sub Agent to Claude Sonnet (right) -->
+  <line x1="720" y1="394" x2="720" y2="436" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+  <text x="726" y="420" font-size="10" fill="#f59e0b">Classify risk</text>
+
+  <!-- Claude Sonnet LEFT -->
+  <rect x="60" y="438" width="240" height="52" rx="10" fill="#3d2600" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="180" y="460" text-anchor="middle" font-size="14" font-weight="600" fill="#fcd34d">Claude Sonnet</text>
+  <text x="180" y="478" text-anchor="middle" font-size="11" fill="#64748b">Risk Classifier &amp; Action Planner</text>
+
+  <!-- Claude Sonnet RIGHT -->
+  <rect x="600" y="438" width="240" height="52" rx="10" fill="#3d2600" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="720" y="460" text-anchor="middle" font-size="14" font-weight="600" fill="#fcd34d">Claude Sonnet</text>
+  <text x="720" y="478" text-anchor="middle" font-size="11" fill="#64748b">Risk Classifier &amp; Action Planner</text>
+
+  <!-- Primary Claude to Risk Policy Engine -->
+  <line x1="180" y1="490" x2="180" y2="530" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="116" y="516" font-size="10" fill="#f59e0b">Enforce policy</text>
+
+  <!-- Sub Claude to Scope Whitelist -->
+  <line x1="720" y1="490" x2="720" y2="530" stroke="#8b5cf6" stroke-width="1.5" marker-end="url(#arrow-purple)"/>
+  <text x="726" y="516" font-size="10" fill="#8b5cf6">Whitelist check</text>
 
   <!-- Risk Policy Engine -->
-  <rect x="50" y="580" width="230" height="68" rx="10" fill="url(#orangeGrad)" stroke="#6b4a1a" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="165" y="608" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">Risk Policy Engine</text>
-  <text x="165" y="628" text-anchor="middle" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="11">LOW · MEDIUM · HIGH</text>
+  <rect x="60" y="532" width="240" height="52" rx="10" fill="#3d2600" stroke="#f59e0b" stroke-width="1"/>
+  <text x="180" y="554" text-anchor="middle" font-size="14" font-weight="600" fill="#fcd34d">Risk Policy Engine</text>
+  <text x="180" y="572" text-anchor="middle" font-size="11" fill="#f59e0b">LOW · MEDIUM · HIGH</text>
 
-  <!-- Auth0 Token Vault -->
-  <rect x="435" y="480" width="230" height="68" rx="10" fill="url(#blueGrad)" stroke="#2a4a7f" stroke-width="1.5" filter="url(#shadow)"/>
-  <rect x="463" y="503" width="14" height="18" rx="3" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
-  <path d="M467 503 v-4 a3 3 0 0 1 6 0 v4" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
-  <text x="486" y="510" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">Auth0 Token Vault</text>
-  <text x="486" y="528" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="11">Stores &amp; Refreshes Tokens</text>
+  <!-- Scope Whitelist -->
+  <rect x="600" y="532" width="240" height="52" rx="10" fill="#2d1f5e" stroke="#8b5cf6" stroke-width="1.5"/>
+  <text x="720" y="554" text-anchor="middle" font-size="14" font-weight="600" fill="#c4b5fd">Scope Whitelist</text>
+  <text x="720" y="572" text-anchor="middle" font-size="11" fill="#64748b">list_repos · list_issues · get_user</text>
+
+  <!-- Risk Policy to Auth0 -->
+  <path d="M180 584 L180 620 L380 620 L380 580 L420 560" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Auth0 Token Vault CENTER -->
+  <rect x="350" y="492" width="200" height="52" rx="10" fill="#0a3328" stroke="#10b981" stroke-width="1.5"/>
+  <text x="370" y="511" font-size="12" fill="#10b981">&#128274;</text>
+  <text x="450" y="511" text-anchor="middle" font-size="14" font-weight="600" fill="#6ee7b7">Auth0 Token Vault</text>
+  <text x="450" y="529" text-anchor="middle" font-size="11" fill="#64748b">Stores &amp; Refreshes Tokens</text>
+
+  <!-- Token Vault to GitHub API -->
+  <line x1="450" y1="544" x2="450" y2="630" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+  <text x="462" y="590" font-size="10" fill="#10b981">Scoped access token</text>
+
+  <!-- Whitelist allowed to GitHub -->
+  <path d="M670 584 L670 650 L530 650 L530 672" stroke="#10b981" stroke-width="1.5" fill="none" marker-end="url(#arrow-green)"/>
+  <text x="560" y="645" font-size="10" fill="#10b981">allowed</text>
+
+  <!-- Whitelist blocked -->
+  <rect x="760" y="590" width="120" height="44" rx="8" fill="#3d0f0f" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="820" y="608" text-anchor="middle" font-size="12" font-weight="600" fill="#fca5a5">BLOCKED</text>
+  <text x="820" y="624" text-anchor="middle" font-size="10" fill="#64748b">Scope escalation</text>
+  <line x1="770" y1="584" x2="800" y2="592" stroke="#ef4444" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+  <text x="724" y="582" font-size="10" fill="#ef4444">blocked</text>
 
   <!-- GitHub API -->
-  <rect x="435" y="600" width="230" height="68" rx="10" fill="url(#blueGrad)" stroke="#2a4a7f" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="550" y="628" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">GitHub API</text>
-  <text x="550" y="648" text-anchor="middle" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="11">Repos · Issues · Delete</text>
+  <rect x="350" y="632" width="200" height="52" rx="10" fill="#0f2d1a" stroke="#10b981" stroke-width="1.5"/>
+  <text x="450" y="654" text-anchor="middle" font-size="14" font-weight="600" fill="#86efac">GitHub API</text>
+  <text x="450" y="672" text-anchor="middle" font-size="11" fill="#64748b">Repos · Issues · Delete</text>
+
+  <!-- GitHub to Audit -->
+  <path d="M550 658 L820 658 L820 632" stroke="#64748b" stroke-width="1" fill="none" stroke-dasharray="3,2" marker-end="url(#arrow-gray)"/>
+
+  <!-- Blocked to Audit -->
+  <line x1="820" y1="634" x2="820" y2="630" stroke="#64748b" stroke-width="1" fill="none"/>
+
+  <!-- SQLite Audit Log RIGHT -->
+  <rect x="760" y="582" width="0" height="0"/>
+  <rect x="720" y="476" width="0" height="0"/>
 
   <!-- SQLite Audit Log -->
-  <rect x="820" y="470" width="230" height="68" rx="10" fill="url(#redGrad)" stroke="#7f2d2d" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="935" y="498" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">SQLite Audit Log</text>
-  <text x="935" y="518" text-anchor="middle" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Immutable Action Records</text>
+  <rect x="750" y="580" width="130" height="52" rx="10" fill="#2d0a0a" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="815" y="602" text-anchor="middle" font-size="13" font-weight="600" fill="#fca5a5">SQLite Audit Log</text>
+  <text x="815" y="620" text-anchor="middle" font-size="10" fill="#64748b">Immutable Action Records</text>
 
-  <!-- ========== ARROWS ========== -->
+  <!-- All paths log to audit -->
+  <path d="M180 584 L180 740 L750 740 L750 610" stroke="#64748b" stroke-width="1" fill="none" stroke-dasharray="3,2" marker-end="url(#arrow-gray)"/>
+  <path d="M450 684 L450 740 L750 740" stroke="#64748b" stroke-width="1" fill="none" stroke-dasharray="3,2"/>
+  <path d="M820 634 L820 740 L750 740" stroke="#64748b" stroke-width="1" fill="none" stroke-dasharray="3,2"/>
 
-  <!-- User -> UI -->
-  <line x1="550" y1="143" x2="550" y2="193" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrowBlue)"/>
-  <rect x="490" y="158" width="120" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
-  <text x="550" y="172" text-anchor="middle" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="10">HTTP Requests</text>
+  <!-- Risk Levels Legend -->
+  <rect x="60" y="650" width="240" height="80" rx="8" fill="#111827" stroke="#1e2d4a" stroke-width="1"/>
+  <text x="180" y="670" text-anchor="middle" font-size="11" font-weight="600" fill="#94a3b8" letter-spacing="1">RISK LEVELS</text>
+  <circle cx="80" cy="688" r="5" fill="#10b981"/>
+  <text x="92" y="692" font-size="11" fill="#64748b">LOW — Read only</text>
+  <circle cx="80" cy="708" r="5" fill="#f59e0b"/>
+  <text x="92" y="712" font-size="11" fill="#64748b">MEDIUM — Limited write</text>
+  <circle cx="80" cy="728" r="5" fill="#ef4444"/>
+  <text x="92" y="732" font-size="11" fill="#64748b">HIGH — Step-up required</text>
 
-  <!-- UI -> Backend -->
-  <line x1="550" y1="257" x2="550" y2="328" stroke="#10b981" stroke-width="2" marker-end="url(#arrowGreen)"/>
-  <rect x="500" y="280" width="100" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
-  <text x="550" y="294" text-anchor="middle" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="10">REST API calls</text>
+  <!-- Path legend -->
+  <rect x="310" y="750" width="280" height="56" rx="8" fill="#111827" stroke="#1e2d4a" stroke-width="1"/>
+  <text x="450" y="768" text-anchor="middle" font-size="11" font-weight="600" fill="#94a3b8" letter-spacing="1">AGENT PATHS</text>
+  <line x1="325" y1="782" x2="355" y2="782" stroke="#3b82f6" stroke-width="2"/>
+  <text x="360" y="786" font-size="10" fill="#64748b">Primary agent</text>
+  <line x1="430" y1="782" x2="460" y2="782" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="465" y="786" font-size="10" fill="#64748b">Sub-agent</text>
+  <line x1="325" y1="798" x2="355" y2="798" stroke="#ef4444" stroke-width="2"/>
+  <text x="360" y="802" font-size="10" fill="#64748b">Blocked path</text>
+  <line x1="430" y1="798" x2="460" y2="798" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <text x="465" y="802" font-size="10" fill="#64748b">Audit log</text>
 
-  <!-- Backend -> Claude -->
-  <line x1="385" y1="400" x2="240" y2="468" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arrowPurple)"/>
-  <rect x="255" y="418" width="120" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
-  <text x="315" y="432" text-anchor="middle" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="10">Classify risk level</text>
-
-  <!-- Claude -> Risk Policy -->
-  <line x1="165" y1="538" x2="165" y2="578" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowYellow)"/>
-  <rect x="113" y="548" width="105" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
-  <text x="165" y="562" text-anchor="middle" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="10">Enforce policy</text>
-
-  <!-- Backend -> Auth0 Token Vault -->
-  <line x1="550" y1="400" x2="550" y2="478" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrowBlue)"/>
-  <rect x="480" y="430" width="140" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
-  <text x="550" y="444" text-anchor="middle" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="10">Request OAuth token</text>
-
-  <!-- Auth0 -> GitHub -->
-  <line x1="550" y1="548" x2="550" y2="598" stroke="#10b981" stroke-width="2" marker-end="url(#arrowGreen)"/>
-  <rect x="480" y="563" width="140" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
-  <text x="550" y="577" text-anchor="middle" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="10">Scoped access token</text>
-
-  <!-- Backend -> SQLite -->
-  <line x1="715" y1="400" x2="858" y2="468" stroke="#ef4444" stroke-width="2" marker-end="url(#arrowRed)"/>
-  <rect x="740" y="418" width="110" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
-  <text x="795" y="432" text-anchor="middle" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="10">Log all actions</text>
-
-  <!-- Risk Policy -> Backend (dashed return) -->
-  <line x1="280" y1="600" x2="375" y2="395" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrowYellow)" opacity="0.6"/>
-  <rect x="280" y="485" width="115" height="20" rx="4" fill="#0a0e1a" opacity="0.85"/>
-  <text x="338" y="499" text-anchor="middle" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="10">Step-up / block</text>
-
-  <!-- ========== LEGEND ========== -->
-  <rect x="820" y="580" width="230" height="80" rx="8" fill="#0f1629" stroke="#1e2d4a" stroke-width="1"/>
-  <text x="935" y="600" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="10" font-weight="600" letter-spacing="0.5">RISK LEVELS</text>
-  <circle cx="855" cy="618" r="5" fill="#10b981"/>
-  <text x="868" y="622" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="11">LOW — Read only</text>
-  <circle cx="855" cy="636" r="5" fill="#f59e0b"/>
-  <text x="868" y="640" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="11">MEDIUM — Limited write</text>
-  <circle cx="855" cy="654" r="5" fill="#ef4444"/>
-  <text x="868" y="658" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11">HIGH — Step-up required</text>
-
-  <!-- ========== FOOTER ========== -->
-  <rect x="0" y="700" width="1100" height="80" fill="#080c16"/>
-  <line x1="100" y1="700" x2="1000" y2="700" stroke="url(#accentGrad)" stroke-width="1" opacity="0.4"/>
-  <text x="550" y="735" text-anchor="middle" fill="url(#accentGrad)" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="1.5">ScopeGuard</text>
-  <text x="550" y="758" text-anchor="middle" fill="#64748b" font-family="Segoe UI, Arial, sans-serif" font-size="13">Auth0 "Authorized to Act" Hackathon 2026</text>
+  <!-- Footer -->
+  <text x="450" y="815" text-anchor="middle" font-size="12" font-weight="600" fill="#3b82f6">ScopeGuard</text>
 </svg>
